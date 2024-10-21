@@ -1,0 +1,25 @@
+Resources used during developement/learning (sorted newest to oldest)
+
+How to Check if a User is Logged In with React
+https://www.youtube.com/watch?v=EbUNgXQIqrk
+https://github.com/jordanhudgens/react-auth-app/blob/master/src/components/auth/Login.js
+https://github.com/jordanhudgens/react-auth-app/blob/master/src/components/app.js
+
+Login form ant design demo
+https://codesandbox.io/p/sandbox/login-form-ant-design-demo-rx2qf?file=%2Findex.js
+
+React Login and User Authentication (with Node JS ,Express JS and SQLite )
+https://www.youtube.com/watch?v=CBWtETJ0LUY
+- nodemon server.js
+
+How to Use Fetch with async/await
+https://dmitripavlutin.com/javascript-fetch-async-await/
+
+create-react-app-example
+https://github.com/react-navigation/create-react-app-example/blob/master/src/App.js
+
+react-navigation
+https://github.com/react-navigation/react-navigation
+
+
+

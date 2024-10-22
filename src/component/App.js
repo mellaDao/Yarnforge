@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Home from "./Home";
@@ -14,7 +13,6 @@ import ForgotPassword from "./ForgotPassword";
 import ViewPattern from "./ViewPattern";
 import TokenVerification from "./TokenVerification";
 import ResetPassword from "./ResetPassword";
-import axios from "axios";
 
 function App() {
   const location = useLocation();
@@ -30,6 +28,7 @@ function App() {
 
   return (
     <div>
+      {/* Routes*/}
       {showHeader && <Header />}
       <Routes>
         <Route path="/myPatterns" element={<MyPatterns />} />

@@ -3,19 +3,23 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
+  /* store username and password into form data, initialize as empty*/
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
+  /* define states for errors, loading, and showPassword*/
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  /* retrieve autosaved username and password from session storage*/
   useEffect(() => {
     const savedUsername = sessionStorage.getItem("usernameAutosave");
     const savedPassword = sessionStorage.getItem("passwordAutosave");
 
+    /* if there is a saved username, then set formdata's username to it*/
     if (savedUsername) {
       setFormData((prevData) => ({
         ...prevData,
@@ -23,6 +27,7 @@ function Login() {
       }));
     }
 
+    /* if there is a saved password, then set formdata's password to it*/
     if (savedPassword) {
       setFormData((prevData) => ({
         ...prevData,
@@ -31,6 +36,7 @@ function Login() {
     }
   }, []);
 
+  /* on change for input box, update username and password in session storage*/
   const handleChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -39,10 +45,12 @@ function Login() {
     sessionStorage.setItem(e.target.name + "Autosave", e.target.value);
   };
 
+  /* on click, toggle password text visibility*/
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  /* on form submission*/
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -53,28 +61,29 @@ function Login() {
       );
       if (response.status === 200) {
         const { token, username, email } = response.data;
-        // Store username and email into session storage
+        // store username and email into session storage
         localStorage.setItem("token", token);
         localStorage.setItem("username", username);
         localStorage.setItem("email", email);
 
-        // Redirect to home after login
+        // redirect to home after login
         window.location.href = "/";
       }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
+        // set errors
         setErrors(error.response.data.errors);
       } else {
         console.error("An error occurred:", error.message);
         setErrors(["An unexpected error occurred. Please try again."]);
       }
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false); // set loading to false regardless of success or failure
     }
   }
 
   return (
-    <section id="body-style2">
+    <section id="body-style-light">
       <section id="brand-heading">
         <h1>
           <Link to="/" id="return-home-btn">
@@ -83,10 +92,12 @@ function Login() {
         </h1>
       </section>
 
-      <div className="login-page">
+      <div className="auth-page">
         <div className="form">
+          {/* login form*/}
           <form className="login-form" method="post" onSubmit={handleSubmit}>
             <h2>Login</h2>
+            {/* input box for username*/}
             <div className="input-box">
               <input
                 type="text"
@@ -103,6 +114,8 @@ function Login() {
                 ]}
               />
             </div>
+
+            {/* input box for password*/}
             <div className="input-box">
               <input
                 name="password"
@@ -119,6 +132,8 @@ function Login() {
                   },
                 ]}
               />
+
+              {/* toggle icon for password visibility*/}
               <span
                 className={`field-icon bx ${
                   showPassword ? "bx-show" : "bx-hide"
@@ -126,16 +141,24 @@ function Login() {
                 onClick={togglePasswordVisibility}
               ></span>
             </div>
+
+            {/* forgot password link, redirects to forgotPassword page*/}
             <div className="forgot-password">
               <Link to="/forgotPassword">Forgot Password?</Link>
             </div>
+
+            {/* submit form button, change button text depending on loading state*/}
             <button type="submit" id="login-submit-button" disabled={loading}>
               {loading ? "Logging in..." : "Login"}
             </button>
+
+            {/* register link, redirects to register page*/}
             <p className="message">
               Not registered? <Link to="/register">Create an account</Link>
             </p>
           </form>
+
+          {/* error message container*/}
           <div className="error-message">
             {errors.map((error, index) => (
               <p key={index}>{error}</p>

@@ -7,6 +7,7 @@ import axios from "axios";
 function ResetPassword() {
   const navigate = useNavigate();
 
+  // get email from url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const email = queryParams.get("email");
@@ -15,8 +16,7 @@ function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  /* After form submission, wait for a response for POST request*/
-
+  // after form submission, wait for a response for POST request
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -26,24 +26,27 @@ function ResetPassword() {
         confirmPassword,
       });
       if (response.status === 200) {
-        /* If successful response, redirect user to login page*/
+        // if successful response, redirect user to login page
 
         navigate(`/login`);
       } else {
-        /* If there is a match with database*/
+        // if there is a match with database
 
         setErrors([response.data.error || "Invalid token."]);
       }
     } catch (error) {
       console.error(error);
       if (error.response && error.response.data && error.response.data.errors) {
+        // set errors from response
         setErrors(error.response.data.errors);
       } else {
+        // catch other errors
         setErrors(["Failed to reset password. Try again later."]);
       }
     }
   }
 
+  // as user types, update password and confirm password values
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
@@ -53,7 +56,8 @@ function ResetPassword() {
   };
 
   return (
-    <section id="body-style2">
+    <section id="body-style-light">
+      {/* click brand heading to redirec to home page*/}
       <section id="brand-heading">
         <h1>
           <Link to="/" id="return-home-btn">
@@ -61,10 +65,14 @@ function ResetPassword() {
           </Link>
         </h1>
       </section>
-      <div className="login-page">
+
+      {/* reset password page container*/}
+      <div className="auth-page">
+        {/* reset password form*/}
         <div className="form">
           <h2>Reset Password</h2>
-          <form className="register-form" onSubmit={handleSubmit}>
+
+          <form className="reset-password-form" onSubmit={handleSubmit}>
             <div className="input-box">
               <input
                 type="text"

@@ -5,28 +5,31 @@ function Home() {
   const navigate = useNavigate();
 
   const handleGetStartedClick = () => {
+    // clicking get started button will navigate user to new pattern page
     navigate("/newPattern");
   };
 
   return (
     <section className="home-main-content">
-      {/* Invite users to start designing a pattern */}
+      {/* home main content */}
       <div className="getting-started">
+        {/* invite users to start designing a pattern */}
         <h2>Design your own knitting pattern for free!</h2>
-        {/* Redirects to generate_pattern.php */}
         <button id="get-started-btn" onClick={handleGetStartedClick}>
+          {/* button to redirects to generate_pattern.php */}
           Get Started
         </button>
       </div>
       <div className="tutorial">
-        {/* Show youtube video for an introductory video for knitting */}
+        {/* tutorial section text */}
         <section id="tutorial-title">
           <h3>
             Don't know how to knit? Check out this video tutorial from RJ Knits!
           </h3>
         </section>
 
-        <section id="tutorial-video">
+        <section id="video">
+          {/* tutorial video*/}
           <iframe
             width="560"
             height="315"
@@ -37,7 +40,8 @@ function Home() {
           ></iframe>
         </section>
 
-        <section id="tutorial-video-title">
+        <section id="video-title">
+          {/* tutorial video title text */}
           <h3>Knitting for beginners: A Complete Introduction</h3>
           <a
             href="https://www.youtube.com/watch?v=p_R1UDsNOMk"
@@ -48,7 +52,8 @@ function Home() {
             View Video
           </a>
         </section>
-        {/* Credit for YT video */}
+
+        {/* credit for YT video */}
         <p>Credit: @RJ Knits on YouTube</p>
       </div>
     </section>

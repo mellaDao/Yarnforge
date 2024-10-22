@@ -4,13 +4,16 @@ function Glossary() {
   return (
     <section className="general-main-content">
       <section id="glossary-intro">
+        {/* Glossary page title */}
         <h2>Glossary for Knitting Abbreviations</h2>
       </section>
 
       <section id="divider"></section>
 
       <section id="glossary">
+        {/* Glossary section */}
         <div className="glossary-term">
+          {/* Glossary term and its meaning or description*/}
           <h3>
             <strong>StSt</strong>
           </h3>

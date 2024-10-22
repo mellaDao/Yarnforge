@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
-/* default Theme */
 
+/* default Theme */
 :root {
     --main-bg-color: #110927;
     --main-bg-color-transparent: #11002467;
@@ -25,10 +25,12 @@
     --font-family: 'Merriweather', serif;
 }
 
+/* main font family used*/
 *{
     font-family: var(--font-family);
 }
 
+/* default font styles*/
 h1 {
     color: var(--secondary-text-color);
     margin: 0;
@@ -41,7 +43,7 @@ h2 {
     font-size: 2.0em;
 }
 
-.login-page h2{
+.auth-page h2{
     color: var(--secondary-button-color);
     margin-bottom: 15px;
     font-size: 2.0em;
@@ -62,20 +64,24 @@ hr {
     text-decoration: underline;
 }
 
-#body-style1 {
+/* body style with dark background, white text*/
+#body-style-dark {
     background-color: var(--main-bg-color);
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    color: white;
 }
 
-#body-style2 {
+/* body style with light background, dark text*/
+#body-style-light {
     background-color: rgb(53, 41, 107);
     margin: 0;
     padding: 0;
     min-height: 100vh;
 }
 
+/* body style description text*/
 #body-style1 p {
     color: var(--main-text-color);
     text-align: left;
@@ -84,10 +90,12 @@ hr {
     line-height: 2;
 }
 
+/* custom divider*/
 #divider{
     height: 50px;
 }
 
+/* header*/
 header {
     height: 70px;
     display: flex;
@@ -100,15 +108,18 @@ header {
     border-bottom: 2px solid var(--divider-color);
 }
 
+/* header link*/
 #brand-heading a {
     text-decoration: none;
     color: inherit;
 }
 
+/* nav bar*/
 nav {
     background-color: var(--nav-bg-color);
 }
 
+/* account button*/
 #account-button {
     display: inline-block;
     padding: 10px 20px;
@@ -117,18 +128,21 @@ nav {
     color: var(--main-text-color);
     font-size: 18px;
 }
-  
+
+/* user icon for account button*/
 #account-button > .bx.bxs-user {
     transform: translateY(2px);
     font-size: 24px;
     margin-left: 5px;
 }
 
+/* change color for account button on hover*/
 #account-button:hover{
     color: var(--link-hover-color);
     transition: color 0.6s ease;
 }
 
+/* account actions (logout and reset password) buttons on account page*/
 .logout-button, .reset-password-button {
     display: inline-block;
     padding: 8px 16px;
@@ -139,10 +153,12 @@ nav {
     transition: background-color 0.3s ease;
   }
   
+/* change color for logout and reset password button on hover*/
 .logout-button:hover, .reset-password-button:hover {
     background-color: var(--link-hover-color);
 }
 
+/* login button*/
 #login-button{
     margin-right: 20px;
     height: 40px;
@@ -153,6 +169,7 @@ nav {
     text-align: center;
 }
 
+/* sign up button*/
 #signup-button{
     height: 40px;
     width: 75px;
@@ -162,6 +179,7 @@ nav {
     text-align: center;
 }
 
+/* home page main content*/
 .home-main-content {
     background-image: url('../pictures/home-background.jpg');
     background-color: var(--main-bg-color-transparent);
@@ -172,11 +190,13 @@ nav {
     background-blend-mode: multiply;
 }
 
+/* getting started section*/
 .getting-started {
     text-align: center;
     padding: 175px;
 }
 
+/* getting started button*/
 #get-started-btn{
     margin: 30px;
     height: 50px;
@@ -187,17 +207,20 @@ nav {
     text-align: center;
 }
 
+/* header list*/
 header nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
+/* header list items*/
 header nav li {
     display: inline-block;
     padding-right: 40px;
 }
 
+/* header list links*/
 header nav a {
     color: var(--main-text-color);
     position: relative;
@@ -205,11 +228,13 @@ header nav a {
     color: var(--link-color);
 }
 
+/* change color on hover for links in header*/
 header nav a:hover {
     color: var(--link-hover-color);
     transition: color 0.6s ease;
 }
 
+/* add underline on hover for links in header*/
 header nav a::after {
     content: '';
     position: absolute;
@@ -224,11 +249,13 @@ header nav a::after {
     margin-top: 30px;
 }
 
+/* expand underline on hover for links in header*/
 header nav a:hover::after {
     transform: scaleX(1);
     transform-origin: center;
 }
 
+/* footer*/
 footer {
     background-color: var(--footer-bg-color);
     color: var(--text-color);
@@ -239,29 +266,31 @@ footer {
     width: 100%;
 }
 
+/* tutorial section*/
 .tutorial{
     background: var(--main-bg-color);
     padding: 50px;
 }
 
-#tutorial-title{
+/* video section titles*/
+#tutorial-title, #knitting101-title{
     padding-bottom: 50px;
 }
 
-#tutorial-video-title {
+/* video title*/
+#video-title {
+    display: inline-block;
     vertical-align: top;
 }
 
-#tutorial-video,
-#tutorial-video-title {
+/* tutorial video*/
+#video {
     display: inline-block;
-}
-
-#tutorial-video {
     max-width: 560px;
     margin-right: 20px; 
 }
 
+/* video video button*/
 #view-video-btn {
     margin-top: 25px;
     padding:5px;
@@ -274,14 +303,12 @@ footer {
     text-align: center;
 }
 
+/* change color of video video button on hover*/
 #view-video-btn:hover {
     background-color: var(--link-hover-color);
 }
 
-#date, #time {
-    font-weight: bold;
-}
-
+/* default for pages' main content*/
 .general-main-content {
     background-color: var(--main-bg-color);
     padding: 80px;
@@ -292,6 +319,7 @@ footer {
     padding-bottom: 30px;
 }
 
+/* stitches tutorial list*/
 .stitches-tutorial ul {
     list-style-type: none;
     text-align: left;
@@ -299,12 +327,14 @@ footer {
     padding: 0px 0px 30px 0px;
 }
 
+/* stitches tutorial list items*/
 .stitches-tutorial li {
     display: inline-block;
     padding-right: 40px;
     font-size: 16px;
 }
 
+/* stitches tutorial span font styling*/
 .stitches-tutorial span {
     color: var(--main-text-color);
     position: relative;
@@ -312,6 +342,7 @@ footer {
     color: var(--link-color);
 }
 
+/* change color on hover for span in stitches tutorial section*/
 .stitches-tutorial span:hover {
     display: inline-block;
     position: relative;
@@ -319,6 +350,7 @@ footer {
     transition: color 0.6s ease;
 }
 
+/* add underline on hover for span in stitches tutorial section*/
 .stitches-tutorial span::after {
     content: '';
     position: absolute;
@@ -333,6 +365,7 @@ footer {
     margin-top: 30px;
 }
 
+/* expand underline on hover for span in stitches tutorial section*/
 .stitches-tutorial span:hover::after {
     transform: scaleX(1);
     transform-origin: center;
@@ -473,13 +506,13 @@ footer {
     border-right: 1px solid var(--divider-color);
 }
 
-.login-page {
+.auth-page {
     width: 450px;
     padding: 15% 0 0;
     margin: auto;
 }
 
-.login-page .form {
+.auth-page .form {
     position: relative;
     background: rgb(255, 255, 255);
     backdrop-filter: blue(20px);
@@ -489,12 +522,12 @@ footer {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
-.login-page .form .input-box {
+.auth-page .form .input-box {
     display: flex;
     align-items: center;
 }
 
-.login-page .form .input-box input {
+.auth-page .form .input-box input {
     width: 100%;
     height: 100%;
     margin: 30px 0;
@@ -506,7 +539,7 @@ footer {
     font-size: 14px;
 }
 
-.login-page .form button {
+.auth-page .form button {
     font-family: var(--font-family);
     text-transform: uppercase;
     background: var(--secondary-button-color);
@@ -518,17 +551,17 @@ footer {
     cursor: pointer;
 }
 
-.login-page .form button:hover,.form button:active,.form button:focus {
+.auth-page .form button:hover,.form button:active,.form button:focus {
     background: var(--header-bg-color);
 }
 
-.login-page .form .message {
+.auth-page .form .message {
     margin: 15px 0 0 0;
     color: #7a7a7a;
     font-size: 14px;
 }
 
-.login-page .form .message a {
+.auth-page .form .message a {
     padding-left: 20px;
     color: var(--secondary-button-color);
     text-decoration: none;

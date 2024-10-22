@@ -4,22 +4,22 @@ import { useNavigate } from "react-router-dom";
 
 function NewPattern() {
   const navigate = useNavigate();
-  // Define state variables for each dropdown
+  // define state variables for each dropdown
   const [size, setSize] = useState("xs");
   const [stStNeedleSize, setStStNeedleSize] = useState("4.5");
   const [ribNeedleSize, setRibNeedleSize] = useState("4");
 
-  // Function to handle changes in the size dropdown
+  // function to handle changes in the size dropdown
   const handleSizeChange = (event) => {
     setSize(event.target.value);
   };
 
-  // Function to handle changes in the neckline dropdown
+  // function to handle changes in the neckline dropdown
   const handleStStNeedleChange = (event) => {
     setStStNeedleSize(event.target.value);
   };
 
-  // Function to handle changes in the neckline dropdown
+  // function to handle changes in the neckline dropdown
   const handleRibNeedleChange = (event) => {
     setRibNeedleSize(event.target.value);
   };
@@ -27,29 +27,34 @@ function NewPattern() {
   var activeButtons = {};
 
   function toggleImageButton(button) {
-    // Toggle the active class for the clicked button
+    // toggle the active class for the clicked button
     button.classList.toggle("active");
-    // Get parent group
+    // get parent group
     var buttonGroup = button.parentElement;
-    // Remove the active class from other buttons
+    // remove the active class from other buttons
     var buttons = buttonGroup.querySelectorAll(".image-button");
 
+    // loop through all image buttons, remove active and reset color from all other buttons*/
     for (var i = 0; i < buttons.length; i++) {
       if (buttons[i] !== button) {
         buttons[i].classList.remove("active");
-        buttons[i].style.color = ""; // Reset background color
+        buttons[i].style.color = "";
+        // remove the non-active button from activeButtons
         delete activeButtons[buttons[i].id];
       }
     }
 
+    // set active button color and set to true for activeButtons
     if (button.classList.contains("active")) {
-      button.style.color = "#009c7a"; // Change background color to blue
+      button.style.color = "#009c7a";
       activeButtons[button.id] = true;
     } else {
-      button.style.color = ""; // Reset background color
+      // reset background color for non-active buttons and remove from activeButtons
+      button.style.color = "";
       delete activeButtons[button.id];
     }
 
+    // update the value of the button
     var inputId = button.id.replace(/-button\d+$/, "-input");
     var inputValue = button.classList.contains("active") ? button.value : "";
     document.getElementById(inputId).value = inputValue;
@@ -227,30 +232,7 @@ function NewPattern() {
         notes = sanitizeInput(value);
       }
     });
-    /*
-    console.log({
-      clothingType,
-      necklineType,
-      sleeveType,
-      sleeveLength,
-      sizeDropdown,
-      fitting,
-      yarnWeight,
-      ribStitches,
-      ribWidth,
-      ribRows,
-      ribLength,
-      ribNeedleSize,
-      ststStitches,
-      ststWidth,
-      ststRows,
-      ststLength,
-      ststNeedleSize,
-      garmentName,
-      createdFor,
-      notes,
-    });
-*/
+
     function calculateSweaterLength(fitting) {
       let length = 0;
       switch (fitting) {

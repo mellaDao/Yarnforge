@@ -8,7 +8,7 @@ function ForgotPassword() {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState([]);
 
-  /* After form submission, wait for response from POST*/
+  // after form submission, wait for response from POST
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -17,19 +17,16 @@ function ForgotPassword() {
         { email }
       );
       if (response.status === 200) {
-        /* If response == 200, user will redirected for token verification*/
+        // if response == 200, user will redirected for token verification
         navigate(`/TokenVerification?email=${encodeURIComponent(email)}`);
       } else {
-        /* Otherwise, an error occurred (no match for email in database)*/
-
+        // otherwise, an error occurred (no match for email in database)
         setErrors([
           response.data.error || "Failed to send password recovery email.",
         ]);
       }
     } catch (error) {
-      /* Catch other errors during form submission*/
-
-      console.error(error);
+      // catch other errors during form submission
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -38,12 +35,14 @@ function ForgotPassword() {
     }
   }
 
+  // as user types, update email value
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
 
   return (
-    <section>
+    <section id="body-style-light">
+      {/* brand heading redirects to home */}
       <section id="brand-heading">
         <h1>
           <Link to="/" id="return-home-btn">
@@ -51,31 +50,32 @@ function ForgotPassword() {
           </Link>
         </h1>
       </section>
-      <div className="login-page">
-        {/* Form that allows user to enter their account's email to reset password */}
+      <div className="auth-page">
+        {/* form that allows user to enter their account's email to reset password */}
         <div className="form">
           <h2>Forgot Password</h2>
-          <form className="register-form" onSubmit={handleSubmit}>
-            {/* Input box for email */}
+          <form className="forgot-password-form" onSubmit={handleSubmit}>
+            {/* input box for email */}
             <div className="input-box">
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={email}
-                // Sets email as user types
+                // sets email as user types
                 onChange={handleEmailChange}
                 required
               />
             </div>
             <div>
-              {/* Submit form button */}
+              {/* submit form button */}
               <button type="submit" name="reset-request-submit">
                 Send Email
               </button>
             </div>
           </form>
-          {/* Display all errors that occurred during form submission*/}
+
+          {/* display all errors that occurred during form submission*/}
           <div className="error-message">
             {errors.map((error, index) => (
               <p key={index}>{error}</p>

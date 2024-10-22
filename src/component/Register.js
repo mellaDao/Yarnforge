@@ -17,6 +17,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
+    // when component mounts, get autosaved input values from session storage
     const savedUsername = sessionStorage.getItem("usernameAutosave");
     const savedPassword = sessionStorage.getItem("passwordAutosave");
     const savedConfirmPassword = sessionStorage.getItem(
@@ -24,6 +25,7 @@ function Register() {
     );
     const savedEmail = sessionStorage.getItem("emailAutosave");
 
+    // if there is any autosaved input values, set formdata with these values
     if (savedUsername) {
       setFormData((prevData) => ({
         ...prevData,
@@ -53,10 +55,12 @@ function Register() {
     }
   }, []);
 
+  // toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  // as user types, update input box value and store in session storage
   const handleChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -65,6 +69,7 @@ function Register() {
     sessionStorage.setItem(e.target.name + "Autosave", e.target.value);
   };
 
+  // function to handle registration form submission
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -74,13 +79,13 @@ function Register() {
         formData
       );
       if (response.status === 200) {
-        /* If successful response, redirect user to login page*/
-
+        // if successful response, redirect user to login page
         navigate(`/login`);
       }
     } catch (error) {
       console.error(error);
       if (error.response && error.response.data && error.response.data.errors) {
+        // set errors if any
         setErrors(error.response.data.errors);
       } else {
         setErrors(["Failed to register. Try again later."]);
@@ -91,7 +96,8 @@ function Register() {
   }
 
   return (
-    <section id="body-style2">
+    <section id="body-style-light">
+      {/* link to home page*/}
       <section id="brand-heading">
         <h1>
           <Link to="/" id="return-home-btn">
@@ -100,8 +106,10 @@ function Register() {
         </h1>
       </section>
 
-      <div className="login-page">
+      {/* registration page container*/}
+      <div className="auth-page">
         <div className="form">
+          {/* registration form*/}
           <form
             className="register-form"
             onSubmit={handleSubmit}
@@ -109,6 +117,7 @@ function Register() {
             method="POST"
           >
             <h2>Register</h2>
+            {/* username input box*/}
             <div className="input-box">
               <input
                 type="text"
@@ -120,6 +129,7 @@ function Register() {
               />
             </div>
             <div className="input-box">
+              {/* password input box*/}
               <input
                 name="password"
                 id="password-field"
@@ -138,6 +148,7 @@ function Register() {
               ></span>
             </div>
             <div className="input-box">
+              {/* confirm password input box*/}
               <input
                 id="confirm-password-field"
                 type={showPassword ? "text" : "password"}
@@ -150,6 +161,7 @@ function Register() {
               />
             </div>
             <div className="input-box">
+              {/* email input box*/}
               <input
                 type="text"
                 name="email"
@@ -159,6 +171,8 @@ function Register() {
                 onChange={handleChange}
               />
             </div>
+
+            {/* submit form button, change text based on loading state*/}
             <button
               type="submit"
               id="register-submit-button"
@@ -166,10 +180,14 @@ function Register() {
             >
               {loading ? "Creating..." : "Create"}
             </button>
+
+            {/* if already registered, user can click link and redirect to login page*/}
             <p className="message">
               Already registered? <Link to="/login">Sign In</Link>
             </p>
           </form>
+
+          {/* display all errors, if any*/}
           {errors.length > 0 && (
             <div className="error-message">
               {errors.map((error, index) => (

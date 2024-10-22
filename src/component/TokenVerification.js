@@ -14,7 +14,7 @@ function TokenVerification() {
   const [errors, setErrors] = useState([]);
   const [token, setToken] = useState("");
 
-  /* After form submission, wait for a response for POST request*/
+  /* after form submission, wait for a response for POST request*/
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,16 +24,16 @@ function TokenVerification() {
         email,
       });
       if (response.status === 200) {
-        /* If response is successful, continue to /resetPassword */
+        /* if response is successful, continue to /resetPassword */
 
         navigate(`/ResetPassword?email=${encodeURIComponent(email)}`);
       } else {
-        /* If there is no match with database, invalid token */
+        /* if there is no match with database, invalid token */
 
         setErrors([response.data.error || "Invalid token."]);
       }
     } catch (error) {
-      /* Catch any other errors */
+      /* catch any other errors */
 
       console.error(error);
       if (error.response && error.response.data && error.response.data.errors) {
@@ -44,8 +44,7 @@ function TokenVerification() {
     }
   }
 
-  /* Continuously update token as user types */
-
+  /* continuously update token as user types */
   const handleTokenChange = (event) => {
     setToken(event.target.value);
   };
@@ -60,13 +59,13 @@ function TokenVerification() {
         </h1>
       </section>
       <div className="login-page">
-        {/* Form to verify token that was sent to user's email */}
+        {/* form to verify token that was sent to user's email */}
         <div class="form">
           <h2>Password Reset Verification</h2>
           <p>A verification token has been sent to: {email}</p>
           <form class="register-form" onSubmit={handleSubmit}>
             <div class="input-box">
-              {/* Input box for token */}
+              {/* input box for token */}
               <input
                 type="text"
                 name="token"
@@ -76,20 +75,20 @@ function TokenVerification() {
                 required
               />
             </div>
-            {/* Resend email link */}
+            {/* resend email link */}
             <div class="forgot-password">
               <a href="token_verification.php?resend=true&email=<?php echo $email; ?>">
                 Resend email
               </a>
             </div>
             <div>
-              {/* Submit button */}
+              {/* submit button */}
               <button type="submit" name="verify-submit">
                 Verify
               </button>
             </div>
           </form>
-          {/* Display all errors here from form submission */}
+          {/* display all errors here from form submission */}
           <div className="error-message">
             {errors.map((error, index) => (
               <p key={index}>{error}</p>

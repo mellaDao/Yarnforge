@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
+
   // Check if user is logged in when component mounts
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -13,9 +14,9 @@ function Header() {
 
   return (
     <header className="header">
-      {/* brand-logo navigates to home.php */}
       <section id="brand-heading">
         <h1>
+          {/* brand-logo link will navigate to home page */}
           <Link to="/" id="return-home-btn">
             YarnForge
           </Link>

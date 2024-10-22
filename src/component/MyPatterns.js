@@ -9,19 +9,21 @@ function MyPatterns() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // when component mounts, get username from local storage
     const username = localStorage.getItem("username");
 
-    console.log({ message: "from MyPatterns.js" }, username);
+    // if there is no username, redirect to login page
     if (!username) {
       navigate(`/login`);
     }
-    // Fetch patterns when the component mounts
+
+    // fetch patterns when the component mounts
     async function fetchPatterns() {
       try {
         const response = await axios.post(
           "http://localhost:3001/fetchPatterns",
           { username }
-        ); // Endpoint to get user patterns
+        ); // endpoint to get user patterns
         if (response.status === 200) {
           setPatterns(response.data.patterns);
         }
@@ -31,32 +33,34 @@ function MyPatterns() {
           error.response.data &&
           error.response.data.errors
         ) {
+          // set errors
           setErrors(error.response.data.errors);
         } else {
           console.error("An error occurred:", error.message);
           setErrors(["An unexpected error occurred. Please try again."]);
         }
       } finally {
-        setLoading(false); // Set loading to false regardless of success or failure
+        setLoading(false); // set loading to false regardless of success or failure
       }
     }
 
     fetchPatterns();
   }, [navigate]);
 
+  // function to confirm deletion of a pattern
   const confirmDelete = async (patternID, event) => {
     var deleteButton = event.target;
 
-    // Change the text to confirmation message
+    // change the text to confirmation message
     deleteButton.textContent = "Are you sure? ";
     deleteButton.style.color = "white";
 
-    // Disable the "Are you sure?"" button and remove the underline/cursor styles"
+    // disable the "Are you sure?"" button and remove the underline/cursor styles"
     deleteButton.disabled = true;
     deleteButton.style.textDecoration = "none";
     deleteButton.style.cursor = "default";
 
-    // Create yes and no buttons
+    // create yes and no buttons
     var yesConfirm = document.createElement("button");
     yesConfirm.textContent = "Yes";
     yesConfirm.style.color = "lightgray";
@@ -67,33 +71,33 @@ function MyPatterns() {
     noConfirm.style.color = "white";
     noConfirm.style.paddingLeft = "20px";
 
-    // Add new buttons to parent node
+    // add new buttons to parent node
     deleteButton.parentNode.appendChild(yesConfirm);
     deleteButton.parentNode.appendChild(noConfirm);
 
-    // If user confirms the deletion, send patternID to helper function to handle deletion
+    // if user confirms the deletion, send patternID to helper function to handle deletion
     yesConfirm.onclick = async function () {
       await handleDelete(patternID);
     };
 
     noConfirm.onclick = function () {
-      // Restore original text and reenable button
+      // restore original text and reenable button
       deleteButton.textContent = "Delete Pattern";
       deleteButton.style.color = "red";
       deleteButton.disabled = false;
-      // Add back the underline/cursor styles"
+      // add back the underline/cursor styles"
       deleteButton.style.textDecoration = "underline";
       deleteButton.style.cursor = "cursor";
       deleteButton.parentNode.removeChild(yesConfirm);
       deleteButton.parentNode.removeChild(noConfirm);
-      return false; // Prevent default link behavior
+      return false; // prevent default link behavior
     };
   };
 
   const handleDelete = async (patternID, event) => {
     try {
-      await axios.post("http://localhost:3001/deletePattern", { patternID }); // Endpoint to delete a pattern
-      // Refresh the patterns list
+      await axios.post("http://localhost:3001/deletePattern", { patternID }); // endpoint to delete a pattern
+      // pefresh the patterns list
       setPatterns(
         patterns.filter((pattern) => pattern.pattern_id !== patternID)
       );
@@ -107,7 +111,7 @@ function MyPatterns() {
     try {
       const response = await axios.post("http://localhost:3001/viewPattern", {
         patternID,
-      }); // Endpoint to view a pattern
+      }); // endpoint to view a pattern
       if (response.status === 200) {
         const { patternContent, patternParameters } = response.data;
         navigate("/viewPattern", {
@@ -122,17 +126,24 @@ function MyPatterns() {
 
   return (
     <section className="general-main-content">
+      {/* my patterns title*/}
       <h2>Saved Patterns</h2>
+      {/* display loading status*/}
       {loading && <p>Loading...</p>}
+
+      {/* display all errors that occurred*/}
       <div className="error-message">
         {errors.map((error, index) => (
           <p key={index}>{error}</p>
         ))}
       </div>
+
+      {/* display user's saved patterns in a table*/}
       <div className="patterns-table">
         <table>
           <thead>
             <tr>
+              {/* table columns*/}
               <th>Date Created</th>
               <th>Pattern Name</th>
               <th>Created For</th>
@@ -141,6 +152,7 @@ function MyPatterns() {
             </tr>
           </thead>
           <tbody>
+            {/* loop through and display patterns if there are patterns*/}
             {patterns && patterns.length > 0 ? (
               patterns.map((pattern) => (
                 <tr key={pattern.pattern_id}>
@@ -148,6 +160,7 @@ function MyPatterns() {
                   <td>{pattern.pattern_name || "N/A"}</td>
                   <td>{pattern.created_for || "N/A"}</td>
                   <td>
+                    {/* on view pattern button click, pass pattern id to handleViewPattern function*/}
                     <button
                       onClick={() => handleViewPattern(pattern.pattern_id)}
                     >
@@ -155,6 +168,7 @@ function MyPatterns() {
                     </button>
                   </td>
                   <td>
+                    {/* on delete pattern button click, pass pattern id and event to confirmDelete function*/}
                     <button
                       onClick={(event) =>
                         confirmDelete(pattern.pattern_id, event)
@@ -167,6 +181,7 @@ function MyPatterns() {
               ))
             ) : (
               <tr>
+                {/* display a simple message if no patterns are found*/}
                 <td colSpan="5">No patterns found.</td>
               </tr>
             )}

@@ -26,6 +26,7 @@ function Account() {
         <section id="divider"></section>
 
         <section id="account-actions">
+          {/* Account actions section */}
           <h2>Account Actions</h2>
           <p>
             {/* Logout button */}

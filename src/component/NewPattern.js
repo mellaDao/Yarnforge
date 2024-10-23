@@ -102,11 +102,11 @@ function NewPattern() {
     if (typeof currentTab === "undefined") {
       currentTab = 0;
     }
-    // Calculate the index of the previous tab
+    // calculate the index of the previous tab
     var prevIndex =
       (currentTab - 1 + document.getElementsByClassName("tabcontent").length) %
       document.getElementsByClassName("tabcontent").length;
-    // Call openPatternTab with the event and the tabName of the previous tab
+    // call openPatternTab with the event and the tabName of the previous tab
     if (
       prevIndex === document.getElementsByClassName("tabcontent").length - 1 &&
       currentTab === 0
@@ -127,10 +127,10 @@ function NewPattern() {
     if (typeof currentTab === "undefined") {
       currentTab = 0;
     }
-    // Calculate the index of the next tab
+    // calculate the index of the next tab
     var nextIndex =
       (currentTab + 1) % document.getElementsByClassName("tabcontent").length;
-    // Call openPatternTab with the event and the tabName of the next tab
+    // call openPatternTab with the event and the tabName of the next tab
     if (
       nextIndex === 0 &&
       currentTab === document.getElementsByClassName("tabcontent").length - 1
@@ -146,16 +146,17 @@ function NewPattern() {
         .split("'")[1]
     );
   }
-  // Function to hide or show the back button based on the currentTab value
+  // function to hide or show the back button based on the currentTab value
   function updateBackButtonVisibility() {
     const backButton = document.getElementById("backButton");
     if (currentTab === 0) {
-      backButton.style.display = "none"; // Hide the back button
+      backButton.style.display = "none"; // hide the back button
     } else {
-      backButton.style.display = "block"; // Show the back button
+      backButton.style.display = "block"; // show the back button
     }
   }
 
+  // on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -164,7 +165,6 @@ function NewPattern() {
       sleeveType = "",
       sleeveLength = "",
       fitting = "",
-      sizeDropdown = "",
       yarnWeight = "",
       ribStitches = "",
       ribWidth = "",
@@ -198,8 +198,6 @@ function NewPattern() {
         sleeveType = sanitizeInput(value);
       } else if (key.includes("sleeve-length")) {
         sleeveLength = sanitizeInput(value);
-      } else if (key === "size-dropdown") {
-        sizeDropdown = sanitizeInput(value);
       } else if (key.includes("fit")) {
         fitting = sanitizeInput(value);
       } else if (key === "yarn_weight") {
@@ -233,173 +231,123 @@ function NewPattern() {
       }
     });
 
-    function calculateSweaterLength(fitting) {
-      let length = 0;
-      switch (fitting) {
-        case "Petite":
-          length = 45;
-          break;
-        case "Regular":
-          length = 50;
-          break;
-        case "Tall":
-          length = 55;
-          break;
-        default:
-          break;
-      }
-
-      return length;
-    }
-
-    //32, 34, 38, 40, 42, 46, 50
-    function getMeasurements(size, sleeveLength, fitting, sweaterLength) {
-      let sizeText = "";
-      let sleeveText = "";
+    // get bust circumference based on size input
+    function getBustsize(size) {
+      let num = 0;
       switch (size) {
         case "xs":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 32 cm<br>
-                `;
+          num = 32;
           break;
         case "s":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 34 cm<br>
-                `;
+          num = 34;
           break;
         case "m":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 38 cm<br>
-                `;
+          num = 38;
           break;
         case "l":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 40 cm<br>
-                `;
+          num = 40;
           break;
         case "xl":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 42 cm<br>
-                `;
+          num = 42;
           break;
         case "2xl":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 46 cm<br>
-                `;
+          num = 46;
           break;
         case "3xl":
-          sizeText = `
-                <span class='pattern-label'>Size:</span> ${size}<br>
-                <span class='pattern-label'>Finished bust:</span> 50 cm<br>
-                `;
+          num = 50;
           break;
         default:
           break;
       }
+      return num;
+    }
 
+    // determine length multiplier based on size input (add to total sweater length for increasing sizes)
+    function getLengthMultipler(size) {
+      let num;
+      switch (size) {
+        case "xs":
+          num = 1;
+          break;
+        case "s":
+          num = 2;
+          break;
+        case "m":
+          num = 3;
+          break;
+        case "l":
+          num = 4;
+          break;
+        case "xl":
+          num = 5;
+          break;
+        case "2xl":
+          num = 6;
+          break;
+        case "3xl":
+          num = 7;
+          break;
+        default:
+          break;
+      }
+      return num;
+    }
+
+    // get numerical length of sleeves
+    function getSleeveLength(sleeveLength) {
+      let num;
       switch (sleeveLength) {
         case "long":
-          sleeveText =
-            "<span class='pattern-label'>Sleeve Length:</span> long (60 cm)<br>";
+          num = 60;
           break;
         case "3/4 length":
-          sleeveText =
-            "<span class='pattern-label'>Sleeve Length:</span> 3/4 length (45 cm)<br>";
+          num = 45;
           break;
         case "half":
-          sleeveText =
-            "<span class='pattern-label'>Sleeve Length:</span> half (30 cm)<br>";
+          num = 30;
           break;
         case "short":
-          sleeveText =
-            "<span class='pattern-label'>Sleeve Length:</span> short (15 cm)<br>";
+          num = 15;
           break;
         default:
           break;
       }
-
-      const sweaterLengthText = `<span class='pattern-label'>Total length:</span> ${sweaterLength} cm<br>`;
-
-      return sizeText + sleeveText + sweaterLengthText;
+      return num;
     }
 
-    function calculateCastOn(size, ribStitches, ribWidth, ribRows) {
-      let numStitches = 0;
+    // get numerical length of sweater
+    function getSweaterLength(sizeLengthMultiplier, fitting) {
+      let num = 0;
+      switch (fitting) {
+        case "Petite":
+          num = 56 + sizeLengthMultiplier * 2;
+          break;
+        case "Regular":
+          num = 60 + sizeLengthMultiplier * 2;
+          break;
+        case "Long":
+          num = 64 + sizeLengthMultiplier * 2;
+          break;
+        default:
+          break;
+      }
+      return num;
+    }
+
+    // calculate number of stitches to cast on for body
+    function calculateCastOn(bustSizeNum, ribStitches, ribWidth) {
+      let num = 0;
       const stitchLength = ribStitches / ribWidth;
-      /*
-        Sizes: XS, S, M, L, XL, 2XL, 3XL
-        Finished Chest Measurement: 32, 34, 38, 40, 42, 46, 50
-        */
-      // Determine size based on finished chest measurement
-      switch (size) {
-        case "xs":
-          numStitches = stitchLength * 32;
-          break;
-        case "s":
-          numStitches = stitchLength * 34;
-          break;
-        case "m":
-          numStitches = stitchLength * 38;
-          break;
-        case "l":
-          numStitches = stitchLength * 40;
-          break;
-        case "xl":
-          numStitches = stitchLength * 42;
-          break;
-        case "2xl":
-          numStitches = stitchLength * 46;
-          break;
-        case "3xl":
-          numStitches = stitchLength * 50;
-          break;
-        default:
-          break;
-      }
-      numStitches = Math.ceil(numStitches);
-      return numStitches;
+      num = Math.ceil(stitchLength * bustSizeNum);
+      return num;
     }
 
-    function calculateStst(size, ststStitches, ststWidth, ststRows) {
-      let numStitches = 0;
+    // calculate number of stitches for stst
+    function calculateStst(bustSizeNum, ststStitches, ststWidth) {
+      let num = 0;
       const stitchLength = ststStitches / ststWidth;
-      /*
-        Sizes: XS, S, M, L, XL, 2XL, 3XL
-        Finished Chest Measurement: 32, 34, 38, 40, 42, 46, 50
-        */
-      // Determine size based on finished chest measurement
-      switch (size) {
-        case "xs":
-          numStitches = stitchLength * 32;
-          break;
-        case "s":
-          numStitches = stitchLength * 34;
-          break;
-        case "m":
-          numStitches = stitchLength * 38;
-          break;
-        case "l":
-          numStitches = stitchLength * 40;
-          break;
-        case "xl":
-          numStitches = stitchLength * 42;
-          break;
-        case "2xl":
-          numStitches = stitchLength * 46;
-          break;
-        case "3xl":
-          numStitches = stitchLength * 50;
-          break;
-        default:
-          break;
-      }
-      return numStitches;
+      num = Math.ceil(stitchLength * bustSizeNum);
+      return num;
     }
 
     function calculateDecFromRib(numStitches, castOn) {
@@ -414,7 +362,7 @@ function NewPattern() {
       necklineStart,
       necklineBO,
       necklineEnd,
-      sweaterLength
+      sweaterLengthNum
     ) {
       let instructions = "";
       let roundDecreases, roundDecreasesSlow, roundDecreasesRowsSlow;
@@ -429,15 +377,16 @@ function NewPattern() {
         roundDecreasesRowsSlow = Math.round(roundDecreases * 2);
       }
 
-      let deepNeckLength = sweaterLength - 5;
-      let fullLength = sweaterLength + 10;
+      let deepNeckLength = sweaterLengthNum - 10;
+      let normalNeckLength = sweaterLengthNum - 5;
+      let fullLength = sweaterLengthNum;
       let vneckDecreases = Math.round(necklineBO / 2);
 
       // Switch case based on the neckline type
       switch (necklineType) {
         case "Round-neck":
           instructions = `
-                Work in stst until front piece measures ${sweaterLength} cm, ending on WS.<br><br>
+                Work in stst until front piece measures ${normalNeckLength} cm, ending on WS.<br><br>
     
                 Shape the neckline by working ${necklineStart} stitches in stst, BO the next ${necklineBO} stitches and work the next ${necklineStart} stitches.
                 Each shoulder will be worked separately. Place ${necklineStart} stitches on a stitch holder.
@@ -471,7 +420,7 @@ function NewPattern() {
           break;
         case "V-neck":
           instructions = `
-                Work in stst until front piece measures ${sweaterLength} cm, ending on WS.<br><br>
+                Work in stst until front piece measures ${normalNeckLength} cm, ending on WS.<br><br>
     
                 Shape the neckline by working ${necklineStart} stitches in stst, BO the next ${necklineBO} stitches and work the next ${necklineStart} stitches.
                 Each shoulder will be worked separately. Place ${necklineStart} stitches on a stitch holder.
@@ -522,123 +471,110 @@ function NewPattern() {
       return instructions;
     }
 
-    function calculateCastOnSleeves(size, ribStitches, ribWidth, ribRows) {
-      let numStitches = 0;
-      let stitchLength = ribStitches / ribWidth;
-      /*
+    /*
         Sizes: XS, S, M, L, XL, 2XL, 3XL
         Finished Chest Measurement: 32,  34,  38,  40,  42,  46,  50
         Wrist measurements:        13.5, 14, 14.5, 15, 15.5, 16, 16.5
         */
-      // Determine size based on finished chest measurement
-      switch (size) {
+    // Determine size based on finished chest measurement
+    function getWristCircumference(bustSizeNum) {
+      let num = 0;
+      switch (bustSizeNum) {
         case "xs":
-          numStitches = Math.round(stitchLength * 13.5);
+          num = 13.5;
           break;
         case "s":
-          numStitches = Math.round(stitchLength * 14);
+          num = 14;
           break;
         case "m":
-          numStitches = Math.round(stitchLength * 14.5);
+          num = 14.5;
           break;
         case "l":
-          numStitches = Math.round(stitchLength * 15);
+          num = 15;
           break;
         case "xl":
-          numStitches = Math.round(stitchLength * 15.5);
+          num = 15.5;
           break;
         case "2xl":
-          numStitches = Math.round(stitchLength * 16);
+          num = 16;
           break;
         case "3xl":
-          numStitches = Math.round(stitchLength * 16.5);
+          num = 16.5;
           break;
         default:
           break;
       }
-      return numStitches;
+      return num;
     }
 
+    // calculate number of stitches to cast on for sleeves
+    function calculateCastOnSleeves(
+      wristCircumferenceNum,
+      ribStitches,
+      ribWidth
+    ) {
+      let num = 0;
+      let stitchLength = ribStitches / ribWidth;
+      num = Math.ceil(wristCircumferenceNum / stitchLength);
+      return num;
+    }
+
+    // calculate armhole circumference: (cm) = BUST/6 + 3.5 to 6 cm.
+    function getArmholeCircumference(bustSizeNum, sleeveType) {
+      let num = 0;
+      switch (sleeveType) {
+        case "Drop sleeves":
+          num = bustSizeNum / 6 + 3.5;
+          break;
+        case "Puff Sleeves":
+          num = bustSizeNum / 6 + 6;
+          break;
+        case "Bishop Sleeves":
+          num = bustSizeNum / 6 + 3.5;
+          break;
+        default:
+          break;
+      }
+      return num;
+    }
+
+    // calculate sleeve instructions
     function calculateSleeveInstructions(
-      size,
       sleeveType,
-      sleeveLength,
+      sleeveLengthNum,
       castOnSleeves,
       ststStitches,
       ststWidth,
-      ststRows
+      armholeCircumferenceNum
     ) {
-      // Calculate stitch length
-      const stitchLength = ststStitches / ststWidth;
-      let numStitches = 0;
+      let numStitchesArmhole = 0;
       let numIncreases = 0;
-
-      // Calculate number of stitches based on size
-      switch (size) {
-        case "xs":
-          numStitches = Math.round(stitchLength * 35.25);
-          break;
-        case "s":
-          numStitches = Math.round(stitchLength * 36.75);
-          break;
-        case "m":
-          numStitches = Math.round(stitchLength * 38.25);
-          break;
-        case "l":
-          numStitches = Math.round(stitchLength * 39.5);
-          break;
-        case "xl":
-          numStitches = Math.round(stitchLength * 41);
-          break;
-        case "2xl":
-          numStitches = Math.round(stitchLength * 42.25);
-          break;
-        case "3xl":
-          numStitches = Math.round(stitchLength * 43.75);
-          break;
-        default:
-          break;
-      }
-
-      // Calculate sleeve length in centimeters
-      let sleeveLengthCM = 0;
-
-      switch (sleeveLength) {
-        case "long":
-          sleeveLengthCM = 60;
-          break;
-        case "3/4 length":
-          sleeveLengthCM = 45;
-          break;
-        case "half":
-          sleeveLengthCM = 30;
-          break;
-        case "short":
-          sleeveLengthCM = 15;
-          break;
-        default:
-          break;
-      }
-
-      // Calculate number of increases
-      numIncreases = Math.round(Math.abs(numStitches - castOnSleeves));
       let instructions = "";
-      const puffStitches = Math.round(numStitches * 1.25);
-      const bishopStartDec = Math.round(sleeveLengthCM * 0.5);
 
-      // Switch case based on the sleeve type
+      // calculate stitch length
+      const stitchLength = ststStitches / ststWidth;
+
+      // calculate number of stitches for armhole
+      numStitchesArmhole = Math.ceil(armholeCircumferenceNum / stitchLength);
+
+      // calculate number of increases
+      numIncreases = Math.round(Math.abs(numStitchesArmhole - castOnSleeves));
+      const puffStitches = Math.round(numStitchesArmhole * 1.25);
+      const bishopStartDec = Math.round(sleeveLengthNum * 0.5);
+
+      // switch case based on the sleeve type
       switch (sleeveType) {
         case "Drop sleeves":
           instructions = `
-                Increase ${numIncreases} times evenly over ${numStitches} stitches.<br>
-                Work until sleeve length measures ${sleeveLengthCM} cm.<br>
-                Bind off ${numStitches} stitches.<br>
+                Increase ${numIncreases} times evenly over ${numStitchesArmhole} stitches.<br>
+                Work until sleeve length measures ${sleeveLengthNum} cm.<br>
+                Bind off ${numStitchesArmhole} stitches.<br>
                 `;
           break;
         case "Puff Sleeves":
           instructions = `
                 Increase ${numIncreases} times evenly over ${puffStitches} stitches.<br>
-                Work until sleeve length measures ${sleeveLengthCM} cm.<br>
+                Work until sleeve length measures ${sleeveLengthNum} cm.<br>
                 Bind off ${puffStitches} stitches.<br>
                 `;
           break;
@@ -646,8 +582,8 @@ function NewPattern() {
           instructions = `
                 Increase ${numIncreases} times evenly over ${puffStitches} stitches.<br>
                 Work until sleeve length measures ${bishopStartDec} cm.<br>
-                Decrease evenly until piece measures ${sleeveLengthCM} cm.<br>
-                Bind off ${numStitches} stitches.<br>
+                Decrease evenly until piece measures ${sleeveLengthNum} cm.<br>
+                Bind off ${numStitchesArmhole} stitches.<br>
                 `;
           break;
         default:
@@ -655,40 +591,21 @@ function NewPattern() {
             "No instructions available for the selected sleeve type.";
           break;
       }
-
       return instructions;
     }
 
     function calculateNeckbandInstructions(necklineType) {
       let instructions = "";
-
       // Switch case based on the neckline type
       switch (necklineType) {
-        case "Round-neck":
+        case ("Round-neck", "Deep round-neck"):
           instructions = `
                 Pick up approximately 3 stitches for every 4 rows.<br>
                 Work in 1x1 rib until neckband measures 2.5 cm, ending on WS.<br>
                 Bind off stitches loosely or with a larger needle size.<br>
                 `;
           break;
-        case "Deep round-neck":
-          instructions = `
-                Pick up approximately 3 stitches for every 4 rows.<br>
-                Work in 1x1 rib until neckband measures 2.5 cm, ending on WS.<br>
-                Bind off stitches loosely or with a larger needle size.<br>
-                `;
-          break;
-        case "V-neck":
-          instructions = `
-                Pick up approximately 3 stitches for every 4 rows.<br>
-                Put in one stitch marker at the bottom of the v-neck.<br>
-                Work in 1x1 rib.<br>
-                At the same time, M1L before the stitch marker and M1R after the stitch marker.<br>
-                Continue until neckband measures 2.5 cm, ending on WS.<br>
-                Bind off stitches loosely or with a larger needle size.<br>
-                `;
-          break;
-        case "Deep V-neck":
+        case ("V-neck", "Deep V-neck"):
           instructions = `
                 Pick up approximately 3 stitches for every 4 rows.<br>
                 Put in one stitch marker at the bottom of the v-neck.<br>
@@ -716,7 +633,6 @@ function NewPattern() {
             "No instructions available for the selected neckline type.";
           break;
       }
-
       return instructions;
     }
 
@@ -746,123 +662,165 @@ function NewPattern() {
     patternParameters += "Created For: " + createdFor + "<br>";
     patternParameters += "Notes: " + notes;
 
-    let sweaterLength = calculateSweaterLength(fitting);
-    let measurements = getMeasurements(
-      size,
-      sleeveLength,
-      fitting,
-      sweaterLength
-    );
-    let castOn = calculateCastOn(size, ribStitches, ribWidth, ribRows);
+    // calculate bust circumference and set text
+    let bustSizeNum = getBustsize(size);
+    let bustSizeText = `
+    <span class='pattern-label'>Size:</span> ${size}<br>
+    <span class='pattern-label'>Finished bust:</span> ${bustSizeNum} cm<br>
+    `;
+
+    // calculate sleeve length and set text
+    let sleeveLengthNum = getSleeveLength(sleeveLength);
+    let sleeveLengthText = `<span class='pattern-label'>Sleeve Length:</span> ${sleeveLength} (${sleeveLengthNum} cm)<br>`;
+
+    // calculate sweater length set text
+    let lengthMultiplier = getLengthMultipler(size);
+    let sweaterLengthNum = getSweaterLength(lengthMultiplier, fitting);
+    let sweaterLengthText = `<span class='pattern-label'>Total length:</span> ${fitting.toLowerCase()} (${sweaterLengthNum} cm)<br>`;
+
+    // calculate the number of stitches to cast on using ribbing gauge
+    let castOn = calculateCastOn(bustSizeNum, ribStitches, ribWidth);
+
+    // calculate the number of stitches for stockinette
     let numStitches = Math.round(
-      calculateStst(size, ststStitches, ststWidth, ststRows)
+      calculateStst(bustSizeNum, ststStitches, ststWidth)
     );
+
+    // calculate when to begin working on neckline
     let necklineStart = Math.round(numStitches / 3);
+
+    // calculate number of stitches to bind off
     let necklineBO = numStitches - necklineStart * 2;
+
+    // calculate number of total rows for neckline before binding off
     let necklineEnd = necklineStart - 6;
+
+    // calculate number of stitches to decrease to match stst and ribbing gauge
     let decsFromRib = calculateDecFromRib(numStitches, castOn);
+
+    // calculate front instructions
     let frontInstructions = calculateFrontInstructions(
       necklineType,
       necklineStart,
       necklineBO,
       necklineEnd,
-      sweaterLength
+      sweaterLengthNum
     );
+
+    // calculate circumference of sleeve
+    let wristCircumferenceNum = getWristCircumference(bustSizeNum);
+
+    // calculate number of stitches to cast on for sleeves
     let castOnSleeves = calculateCastOnSleeves(
-      size,
+      wristCircumferenceNum,
       ribStitches,
       ribWidth,
       ribRows
     );
+
+    // calculate armhole circumference in cm
+    let armholeCircumferenceNum = getArmholeCircumference(
+      bustSizeNum,
+      sleeveType
+    );
+
+    // calculate sleeve instructions
     let sleeveInstructions = calculateSleeveInstructions(
-      size,
       sleeveType,
-      sleeveLength,
+      sleeveLengthNum,
       castOnSleeves,
       ststStitches,
       ststWidth,
-      ststRows
+      ststRows,
+      armholeCircumferenceNum
     );
-    let neckbandInstructions = calculateNeckbandInstructions(necklineType);
-    let backLength = sweaterLength + 5;
 
-    measurements = "<h2>Measurements</h2><br>" + measurements + "<hr>";
+    // calculate neckband instrctions
+    let neckbandInstructions = calculateNeckbandInstructions(necklineType);
+    let backLength = sweaterLengthNum - 5;
+
+    let measurements =
+      "<h2>Measurements</h2><br>" +
+      bustSizeText +
+      sleeveLengthText +
+      sweaterLengthText +
+      "<hr>";
 
     // Materials
     let materials = `
-<h2>Materials</h2><br>
-<span class='pattern-label'>Body:</span> ${ststNeedleSize} mm knitting needles<br>
-<span class='pattern-label'>Ribbing:</span> ${ribNeedleSize} mm knitting needles<br>
-<span class='pattern-label'>Yarn:</span> 500g of ${yarnWeight} weight yarn<hr>
-`;
+    <h2>Materials</h2><br>
+    <span class='pattern-label'>Body:</span> ${ststNeedleSize} mm knitting needles<br>
+    <span class='pattern-label'>Ribbing:</span> ${ribNeedleSize} mm knitting needles<br>
+    <span class='pattern-label'>Yarn:</span> 500g of ${yarnWeight} weight yarn<hr>
+  `;
 
     // Gauge
     let gauge = `
-<h2>Gauge</h2><br>
-Stockinette Stitch (Main):<br>
-${ststStitches} stitches and ${ststRows} rows will create a ${ststLength} x ${ststWidth} cm swatch using ${ststNeedleSize} knitting needles<br><br>
-1x1 Rib Stitch (Rib):<br>
-${ribStitches} stitches and ${ribRows} rows will create a ${ribLength} x ${ribWidth} cm swatch using ${ribNeedleSize} knitting needles<hr>
-`;
+      <h2>Gauge</h2><br>
+      Stockinette Stitch (Main):<br>
+      ${ststStitches} stitches and ${ststRows} rows will create a ${ststLength} x ${ststWidth} cm swatch using ${ststNeedleSize} knitting needles<br><br>
+      1x1 Rib Stitch (Rib):<br>
+      ${ribStitches} stitches and ${ribRows} rows will create a ${ribLength} x ${ribWidth} cm swatch using ${ribNeedleSize} knitting needles<hr>
+    `;
 
     // Stitching Glossary
     let stitchGlossary = `
-<h2>Stitching Glossary</h2><br>
-<b>Stockinette Stitch:</b><br>
-Row 1: K#.<br>
-Row 2: P#.<br>
-Repeat rows 1 and 2 for pattern.<br><br>
+      <h2>Stitching Glossary</h2><br>
+      <b>Stockinette Stitch:</b><br>
+      Row 1: K#.<br>
+      Row 2: P#.<br>
+      Repeat rows 1 and 2 for pattern.<br><br>
 
-<b>1x1 Rib Stitch:</b><br>
-Row 1: *k1, p1* to the end of the row<br>
-Repeat row 1 for pattern.<br><br>
-<hr>
-`;
+      <b>1x1 Rib Stitch:</b><br>
+      Row 1: *k1, p1* to the end of the row<br>
+      Repeat row 1 for pattern.<br><br>
+      <hr>
+    `;
 
     // Knitting Instructions
     let knittingInstructions = `
-<h2>Knitting Instructions</h2><br>
+      <h2>Knitting Instructions</h2><br>
 
-<h3>Back of Sweater</h3>
-<b>Rib:</b><br>
-Using size ${ribNeedleSize} needles, cast on ${castOn} stitches.<br>
-Work in 1x1 rib stitch until ribbing measures 4cm.<br><br>
+      <h3>Back of Sweater</h3>
+      <b>Rib:</b><br>
+      Using size ${ribNeedleSize} needles, cast on ${castOn} stitches.<br>
+      Work in 1x1 rib stitch until ribbing measures 4cm.<br><br>
 
-<b>Main:</b><br>
-Change to size ${ststNeedleSize} needles.<br><br>
-For the first row, decrease ${decsFromRib} times evenly while working stst.
-Continue working in stst until back piece measures ${backLength} cm. End on wrong side.<br><br>
-Each shoulder will be worked separately. To shape the neckline, K ${necklineStart} stitches then BO ${necklineBO} stitches.
-Place the remaining ${necklineStart} stitches on separate needles or a piece of scrap yarn. For each side of the neck, BO 6 stitches at the beginning of the next 6 rows.<br><br>
-Bind off the remaining ${necklineEnd} stitches.<br><br>
+      <b>Main:</b><br>
+      Change to size ${ststNeedleSize} needles.<br><br>
+      For the first row, decrease ${decsFromRib} times evenly while working stst.
+      Continue working in stst until back piece measures ${backLength} cm. End on wrong side.<br><br>
+      Each shoulder will be worked separately. To shape the neckline, K ${necklineStart} stitches then BO ${necklineBO} stitches.
+      Place the remaining ${necklineStart} stitches on separate needles or a piece of scrap yarn. For each side of the neck, BO 6 stitches at the beginning of the next 6 rows.<br><br>
+      Bind off the remaining ${necklineEnd} stitches.<br><br>
 
-<h3>Front of Sweater</h3>
-<b>Rib:</b><br>
-Using size ${ribNeedleSize} needles, cast on ${castOn} stitches.<br>
-Work in 1x1 rib stitch until back piece measures 4cm.<br><br>
+      <h3>Front of Sweater</h3>
+      <b>Rib:</b><br>
+      Using size ${ribNeedleSize} needles, cast on ${castOn} stitches.<br>
+      Work in 1x1 rib stitch until back piece measures 4cm.<br><br>
 
-<b>Main:</b><br>
-Change to size ${ststNeedleSize} needles.<br><br>
-${frontInstructions}<br>
-Sew front and back pieces together.<br><br>
+      <b>Main:</b><br>
+      Change to size ${ststNeedleSize} needles.<br><br>
+      ${frontInstructions}<br>
+      Sew front and back pieces together.<br><br>
 
-<h3>Sleeves</h3>
-<b>Rib:</b><br>
-Using size ${ribNeedleSize} needles, cast on ${castOnSleeves} stitches.<br>
-Work in 1x1 rib stitch until sleeve measures 4cm.<br><br>
+      <h3>Sleeves</h3>
+      <b>Rib:</b><br>
+      Using size ${ribNeedleSize} needles, cast on ${castOnSleeves} stitches.<br>
+      Work in 1x1 rib stitch until sleeve measures 4cm.<br><br>
 
-<b>Main:</b><br>
-Change to size ${ststNeedleSize} needles.<br>
-${sleeveInstructions}<br><br>
+      <b>Main:</b><br>
+      Change to size ${ststNeedleSize} needles.<br>
+      ${sleeveInstructions}<br><br>
 
-<h3>Neckband</h3>
-${neckbandInstructions}<br><br>
+      <h3>Neckband</h3>
+      ${neckbandInstructions}<br><br>
 
-<h3>Finishing</h3>
-Sew sleeves in position.<br>
-Weave in any loose ends.<br>
-Block the pieces.<br><br>
-`;
+      <h3>Finishing</h3>
+      Sew sleeves in position.<br>
+      Weave in any loose ends.<br>
+      Block the pieces.<br><br>
+    `;
 
     // Combine all the strings
     let patternContent =
@@ -1157,18 +1115,7 @@ Block the pieces.<br><br>
             </div>
             <div id="stitch" className="tabcontent">
               <h2>Stitch</h2>
-              {/* 
-                <div className="image-button-wrapper">
-                    <button type="button" id="stitch-type-button1" className="image-button" value="Stockinette" onClick={(event) => toggleImageButton(event.target)}>
-                        <img src="http://via.placeholder.com/250x300" alt="Stockinette" />
-                        <br />Stockinette
-                    </button>
-                    <button type="button" id="stitch-type-button2" className="image-button" value="1x1 Rib" onClick={(event) => toggleImageButton(event.target)}>
-                        <img src="http://via.placeholder.com/250x300" alt="1x1 Rib" />
-                        <br />1x1 Rib
-                    </button>
-                </div>
-                */}
+
               <p>Stockinette gauge</p>
               <div className="gauge-wrapper">
                 <div className="form-row">

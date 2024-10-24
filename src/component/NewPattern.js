@@ -1,235 +1,108 @@
 import React, { useState } from "react";
 import ThreeScene from "./ThreeScene";
+import NewPatternSizeTab from "./NewPatternSizeTab";
+import NewPatternClothingTypeTab from "./NewPatternClothingTypeTab";
+import NewPatternSleevesTab from "./NewPatternSleevesTab";
+import NewPatternStitchTab from "./NewPatternStitchTab";
+import NewPatternDescriptionTab from "./NewPatternDescriptionTab";
+import NewPatternNecklineTab from "./NewPatternNecklineTab";
+import NewPatternTabs from "./NewPatternTabs";
 import { useNavigate } from "react-router-dom";
 
 function NewPattern() {
   const navigate = useNavigate();
-  // define state variables for each dropdown
-  const [size, setSize] = useState("xs");
-  const [stStNeedleSize, setStStNeedleSize] = useState("4.5");
-  const [ribNeedleSize, setRibNeedleSize] = useState("4");
+
+  // define state variables for each form option
+  const [formData, setFormData] = useState({
+    clothingType: "Sweater",
+    necklineType: "",
+    sleeveType: "",
+    sleeveLength: "long",
+    size: "xs",
+    fitting: "",
+    yarnWeight: "",
+    ribStitches: "",
+    ribWidth: "",
+    ribRows: "",
+    ribLength: "",
+    ribNeedleSize: "4",
+    ststStitches: "",
+    ststWidth: "",
+    ststRows: "",
+    ststLength: "",
+    ststNeedleSize: "4.5",
+    garmentName: "",
+    createdFor: "",
+    notes: "",
+  });
+
+  const [activeTabName, setActiveTabName] = useState("clothing-type");
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeImageButtons, setActiveImageButtons] = useState({
+    clothingType: "Sweater",
+    necklineType: "V-neck",
+    sleeveType: "Bishop Sleeves",
+  });
+
+  const openPatternTab = (tabName, tabIndex) => {
+    setActiveTabName(tabName);
+    setActiveTabIndex(tabIndex);
+  };
 
   // function to handle changes in the size dropdown
-  const handleSizeChange = (event) => {
-    setSize(event.target.value);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    console.log(formData);
   };
 
-  // function to handle changes in the neckline dropdown
-  const handleStStNeedleChange = (event) => {
-    setStStNeedleSize(event.target.value);
+  const toggleImageButton = (e) => {
+    const { value, dataset } = e.currentTarget;
+    const type = dataset.type; // (clothingType, necklineType, or sleeveType)
+
+    // update the state
+    setActiveImageButtons({
+      ...activeImageButtons,
+      [type]: value, // use the data type to update the correct state
+    });
   };
-
-  // function to handle changes in the neckline dropdown
-  const handleRibNeedleChange = (event) => {
-    setRibNeedleSize(event.target.value);
-  };
-
-  var activeButtons = {};
-
-  function toggleImageButton(button) {
-    // toggle the active class for the clicked button
-    button.classList.toggle("active");
-    // get parent group
-    var buttonGroup = button.parentElement;
-    // remove the active class from other buttons
-    var buttons = buttonGroup.querySelectorAll(".image-button");
-
-    // loop through all image buttons, remove active and reset color from all other buttons*/
-    for (var i = 0; i < buttons.length; i++) {
-      if (buttons[i] !== button) {
-        buttons[i].classList.remove("active");
-        buttons[i].style.color = "";
-        // remove the non-active button from activeButtons
-        delete activeButtons[buttons[i].id];
-      }
-    }
-
-    // set active button color and set to true for activeButtons
-    if (button.classList.contains("active")) {
-      button.style.color = "#009c7a";
-      activeButtons[button.id] = true;
-    } else {
-      // reset background color for non-active buttons and remove from activeButtons
-      button.style.color = "";
-      delete activeButtons[button.id];
-    }
-
-    // update the value of the button
-    var inputId = button.id.replace(/-button\d+$/, "-input");
-    var inputValue = button.classList.contains("active") ? button.value : "";
-    document.getElementById(inputId).value = inputValue;
-  }
-
-  function setButtonStates() {
-    var buttons = document.getElementsByClassName("image-button");
-    for (var i = 0; i < buttons.length; i++) {
-      var button = buttons[i];
-      if (activeButtons[button.id]) {
-        button.classList.add("active");
-        button.style.color = "#009c7a";
-      } else {
-        button.classList.remove("active");
-        button.style.color = "";
-      }
-    }
-  }
-
-  var currentTab = 0;
-
-  function openPatternTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-
-    tablinks = document.getElementsByClassName("pattern-tab-links"); // Ensure it matches the class name
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-      tablinks[i].style.backgroundColor = "#6E48D5";
-      if (tablinks[i].dataset.tab === tabName) {
-        currentTab = i;
-        tablinks[i].classList.add("active");
-        tablinks[i].style.backgroundColor = "#009c7a";
-      }
-    }
-    document.getElementById(tabName).style.display = "block";
-    updateBackButtonVisibility();
-    setButtonStates();
-  }
 
   function prevTab() {
-    if (typeof currentTab === "undefined") {
-      currentTab = 0;
-    }
-    // calculate the index of the previous tab
-    var prevIndex =
-      (currentTab - 1 + document.getElementsByClassName("tabcontent").length) %
-      document.getElementsByClassName("tabcontent").length;
-    // call openPatternTab with the event and the tabName of the previous tab
-    if (
-      prevIndex === document.getElementsByClassName("tabcontent").length - 1 &&
-      currentTab === 0
-    ) {
-      return;
-    }
-
-    openPatternTab(
-      null,
-      document
-        .getElementsByClassName("pattern-tab-links")
-        [prevIndex].getAttribute("onclick")
-        .split("'")[1]
-    );
+    setActiveTabIndex(activeTabIndex - 1);
   }
 
   function nextTab() {
-    if (typeof currentTab === "undefined") {
-      currentTab = 0;
-    }
-    // calculate the index of the next tab
-    var nextIndex =
-      (currentTab + 1) % document.getElementsByClassName("tabcontent").length;
-    // call openPatternTab with the event and the tabName of the next tab
-    if (
-      nextIndex === 0 &&
-      currentTab === document.getElementsByClassName("tabcontent").length - 1
-    ) {
-      return;
-    }
-
-    openPatternTab(
-      null,
-      document
-        .getElementsByClassName("pattern-tab-links")
-        [nextIndex].getAttribute("onclick")
-        .split("'")[1]
-    );
-  }
-  // function to hide or show the back button based on the currentTab value
-  function updateBackButtonVisibility() {
-    const backButton = document.getElementById("backButton");
-    if (currentTab === 0) {
-      backButton.style.display = "none"; // hide the back button
-    } else {
-      backButton.style.display = "block"; // show the back button
-    }
+    setActiveTabIndex(activeTabIndex + 1);
   }
 
   // on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    let clothingType = "",
-      necklineType = "",
-      sleeveType = "",
-      sleeveLength = "",
-      fitting = "",
-      yarnWeight = "",
-      ribStitches = "",
-      ribWidth = "",
-      ribRows = "",
-      ribLength = "",
-      ribNeedleSize = "",
-      ststStitches = "",
-      ststWidth = "",
-      ststRows = "",
-      ststLength = "",
-      ststNeedleSize = "",
-      garmentName = "",
-      createdFor = "",
-      notes = "";
-
-    const sanitizeInput = (input) => {
-      const element = document.createElement("div");
-      element.innerText = input;
-      return element.innerHTML;
-    };
-
-    const form = event.target;
-    const formData = new FormData(form);
-
-    formData.forEach((value, key) => {
-      if (key.includes("clothing-type")) {
-        clothingType = sanitizeInput(value);
-      } else if (key.includes("neckline-type")) {
-        necklineType = sanitizeInput(value);
-      } else if (key.includes("sleeve-type")) {
-        sleeveType = sanitizeInput(value);
-      } else if (key.includes("sleeve-length")) {
-        sleeveLength = sanitizeInput(value);
-      } else if (key.includes("fit")) {
-        fitting = sanitizeInput(value);
-      } else if (key === "yarn_weight") {
-        yarnWeight = sanitizeInput(value);
-      } else if (key === "rib_stitches") {
-        ribStitches = sanitizeInput(value);
-      } else if (key === "rib_width") {
-        ribWidth = sanitizeInput(value);
-      } else if (key === "rib_rows") {
-        ribRows = sanitizeInput(value);
-      } else if (key === "rib_length") {
-        ribLength = sanitizeInput(value);
-      } else if (key === "rib_needle_size") {
-        ribNeedleSize = sanitizeInput(value);
-      } else if (key === "stst_stitches") {
-        ststStitches = sanitizeInput(value);
-      } else if (key === "stst_width") {
-        ststWidth = sanitizeInput(value);
-      } else if (key === "stst_rows") {
-        ststRows = sanitizeInput(value);
-      } else if (key === "stst_length") {
-        ststLength = sanitizeInput(value);
-      } else if (key === "stst_needle_size") {
-        ststNeedleSize = sanitizeInput(value);
-      } else if (key === "garment_name") {
-        garmentName = sanitizeInput(value);
-      } else if (key === "created_for") {
-        createdFor = sanitizeInput(value);
-      } else if (key === "notes") {
-        notes = sanitizeInput(value);
-      }
-    });
+    const {
+      clothingType,
+      necklineType,
+      sleeveType,
+      sleeveLength,
+      size,
+      fitting,
+      yarnWeight,
+      ribStitches,
+      ribWidth,
+      ribRows,
+      ribLength,
+      ribNeedleSize,
+      ststStitches,
+      ststWidth,
+      ststRows,
+      ststLength,
+      ststNeedleSize,
+      garmentName,
+      createdFor,
+      notes,
+    } = formData;
 
     // get bust circumference based on size input
     function getBustsize(size) {
@@ -833,503 +706,89 @@ function NewPattern() {
 
   return (
     <section>
-      <div className="tabs-wrapper">
-        <button
-          className="pattern-tab-links default-tab active"
-          data-tab="clothing-type"
-          onClick={(event) => openPatternTab(event, "clothing-type")}
-        >
-          Clothing Type
-        </button>
-        <button
-          className="pattern-tab-links"
-          data-tab="neckline"
-          onClick={(event) => openPatternTab(event, "neckline")}
-        >
-          Neckline
-        </button>
-        <button
-          className="pattern-tab-links"
-          data-tab="sleeves"
-          onClick={(event) => openPatternTab(event, "sleeves")}
-        >
-          Sleeves
-        </button>
-        <button
-          className="pattern-tab-links"
-          data-tab="size"
-          onClick={(event) => openPatternTab(event, "size")}
-        >
-          Size
-        </button>
-        <button
-          className="pattern-tab-links"
-          data-tab="stitch"
-          onClick={(event) => openPatternTab(event, "stitch")}
-        >
-          Stitch
-        </button>
-        <button
-          className="pattern-tab-links"
-          data-tab="description"
-          onClick={(event) => openPatternTab(event, "description")}
-        >
-          Description
-        </button>
-      </div>
+      <NewPatternTabs
+        activeTabName={activeTabName}
+        openPatternTab={openPatternTab}
+      />
+
       <div className="navigation-buttons">
         <button id="reset-controls-btn">Reset Controls</button>
-        <button id="backButton" onClick={prevTab}>
+
+        <button
+          id="backButton"
+          style={{
+            display: activeTabIndex === 0 ? "none" : "block",
+          }}
+          onClick={prevTab}
+        >
           Back
         </button>
-        <button id="nextButton" onClick={nextTab}>
+        <button
+          id="nextButton"
+          style={{
+            display: activeTabIndex === 5 ? "none" : "block",
+          }}
+          onClick={nextTab}
+        >
           Next
         </button>
       </div>
 
       <form id="pattern-form" onSubmit={handleSubmit}>
         <div className="pattern-container">
-          <ThreeScene />
+          <ThreeScene
+            formData={formData}
+            activeImageButtons={activeImageButtons}
+          />
           <div className="right-panel">
-            {/* clothing type tab content */}
-            <div
-              id="clothing-type"
-              className="tabcontent"
-              style={{ display: "block" }}
-            >
-              <h2>Clothing Type</h2>
-              <div className="image-button-wrapper-2x1">
-                <button
-                  type="button"
-                  id="clothing-type-button1"
-                  className="image-button"
-                  value="Sweater"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/clothes-sweater.png" alt="Sweater" />
-                  <br></br>Sweater
-                </button>
-                <button
-                  type="button"
-                  id="clothing-type-button2"
-                  className="image-button"
-                  value="Dress"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/clothes-dress.png" alt="Dress" />
-                  <br></br>Dress
-                </button>
-              </div>
-            </div>
-
-            <div id="neckline" className="tabcontent">
-              <h2>Neckline</h2>
-
-              <div className="image-button-wrapper-2x3">
-                <button
-                  type="button"
-                  id="neckline-type-button1"
-                  className="image-button"
-                  value="Round-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/round-neck.png" alt="Round-Neck" />
-                  <br></br>
-                  Round-neck
-                </button>
-                <button
-                  type="button"
-                  id="neckline-type-button2"
-                  className="image-button"
-                  value="Deep round-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/round-neck-deep.png" alt="Deep round-neck" />
-                  <br></br>
-                  Deep round-neck
-                </button>
-                <button
-                  type="button"
-                  id="neckline-type-button3"
-                  className="image-button"
-                  value="V-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/v-neck.png" alt="V-neck" />
-                  <br></br>
-                  V-neck
-                </button>
-                <button
-                  type="button"
-                  id="neckline-type-button4"
-                  className="image-button"
-                  value="Deep V-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/v-neck-deep.png" alt="Deep V-neck" />
-                  <br></br>
-                  Deep V-neck
-                </button>
-                <button
-                  type="button"
-                  id="neckline-type-button5"
-                  className="image-button"
-                  value="Square-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/square-neck.png" alt="Square-Neck" />
-                  <br></br>
-                  Square-neck
-                </button>
-                <button
-                  type="button"
-                  id="neckline-type-button6"
-                  className="image-button"
-                  value="Straight-neck"
-                  onClick={(event) => toggleImageButton(event.currentTarget)}
-                >
-                  <img src="/icons/straight-neck.png" alt="Straight-Neck" />
-                  <br></br>
-                  Straight-neck
-                </button>
-              </div>
-            </div>
-
-            <div id="sleeves" className="tabcontent">
-              <h2>Sleeves</h2>
-              <p>Choose your sleeve style</p>
-              <div className="options-wrapper">
-                <div className="image-button-wrapper-3x1">
-                  <button
-                    type="button"
-                    id="sleeve-type-button1"
-                    className="image-button"
-                    value="Drop Sleeves"
-                    onClick={(event) => toggleImageButton(event.currentTarget)}
-                  >
-                    <img src="/icons/drop-sleeve.png" alt="Drop Sleeves" />
-                    <br></br>
-                    Drop Sleeves
-                  </button>
-                  <button
-                    type="button"
-                    id="sleeve-type-button2"
-                    className="image-button"
-                    value="Puff Sleeves"
-                    onClick={(event) => toggleImageButton(event.currentTarget)}
-                  >
-                    <img src="/icons/puff-sleeve.png" alt="Puff Sleeves" />
-                    <br></br>
-                    Puff Sleeves
-                  </button>
-                  <button
-                    type="button"
-                    id="sleeve-type-button3"
-                    className="image-button"
-                    value="Bishop Sleeves"
-                    onClick={(event) => toggleImageButton(event.currentTarget)}
-                  >
-                    <img src="/icons/bishop-sleeve.png" alt="Bishop Sleeves" />
-                    <br></br>
-                    Bishop Sleeves
-                  </button>
-                </div>
-                <hr />
-
-                <p>Choose your sleeve length</p>
-                <input
-                  type="radio"
-                  id="sleeve-length-button1"
-                  name="sleeve-length"
-                  value="long"
-                  defaultChecked
-                />
-                <label htmlFor="sleeve-length-button1">Long</label>
-
-                <input
-                  type="radio"
-                  id="sleeve-length-button3"
-                  name="sleeve-length"
-                  value="half"
-                />
-                <label htmlFor="sleeve-length-button2">Half</label>
-
-                <input
-                  type="radio"
-                  id="sleeve-length-button4"
-                  name="sleeve-length"
-                  value="short"
-                />
-                <label htmlFor="sleeve-length-button3">Short</label>
-              </div>
-            </div>
-
-            <div id="size" className="tabcontent">
-              <h2>Size</h2>
-              <div className="options-wrapper">
-                <p>Choose a baseline size</p>
-                <select
-                  id="size-dropdown"
-                  name="size-dropdown"
-                  value={size}
-                  onChange={handleSizeChange}
-                >
-                  <option value="xs" data-bust="32" data-waist="24">
-                    XS
-                  </option>
-                  <option value="s" data-bust="36" data-waist="28">
-                    S
-                  </option>
-                  <option value="m" data-bust="40" data-waist="32">
-                    M
-                  </option>
-                  <option value="l" data-bust="44" data-waist="36">
-                    L
-                  </option>
-                  <option value="xl" data-bust="48" data-waist="40">
-                    XL
-                  </option>
-                  <option value="2xl" data-bust="52" data-waist="44">
-                    2XL
-                  </option>
-                  <option value="3xl" data-bust="56" data-waist="48">
-                    3XL
-                  </option>
-                </select>
-                <hr />
-
-                <p>Select a fitting</p>
-                <input type="radio" id="petite" name="fit" value="Petite" />
-                <label htmlFor="petite">Petite</label>
-                <input
-                  type="radio"
-                  id="regular"
-                  name="fit"
-                  value="Regular"
-                  defaultChecked
-                />
-                <label htmlFor="regular">Regular</label>
-                <input type="radio" id="tall" name="fit" value="Tall" />
-                <label htmlFor="tall">Tall</label>
-              </div>
-            </div>
-            <div id="stitch" className="tabcontent">
-              <h2>Stitch</h2>
-
-              <p>Stockinette gauge</p>
-              <div className="gauge-wrapper">
-                <div className="form-row">
-                  <label htmlFor="yarn_weight">Yarn Weight:</label>
-                  <select
-                    id="yarn_weight"
-                    name="yarn_weight"
-                    value={ribNeedleSize}
-                    onChange={setRibNeedleSize}
-                  >
-                    <option value="Lace">Lace</option>
-                    <option value="Light Fingering">Light Fingering</option>
-                    <option value="Sport">Sport</option>
-                    <option value="DK">DK</option>
-                    <option value="Worsted">Worsted</option>
-                    <option value="Aran">Aran</option>
-                    <option value="Bulky">Bulky</option>
-                    <option value="Super Bulky">Super Bulky</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="stst_stitches">Number of Stitches</label>
-                  <input
-                    type="number"
-                    id="stst_stitches"
-                    name="stst_stitches"
-                    defaultValue="18"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="stst_width">Width (cm)</label>
-                  <input
-                    type="number"
-                    id="stst_width"
-                    name="stst_width"
-                    defaultValue="10"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="stst_rows">Number of Rows</label>
-                  <input
-                    type="number"
-                    id="stst_rows"
-                    name="stst_rows"
-                    defaultValue="23"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="stst_length">Length (cm)</label>
-                  <input
-                    type="number"
-                    id="stst_length"
-                    name="stst_length"
-                    defaultValue="10"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="stst_needle_size">Needle Size:</label>
-                  <select
-                    id="stst_needle_size"
-                    name="stst_needle_size"
-                    value={stStNeedleSize}
-                    onChange={handleStStNeedleChange}
-                  >
-                    <option value="US 0 / 2mm / UK 14">
-                      US 0 / 2mm / UK 14
-                    </option>
-                    <option value="2.25">US 1 / 2.25mm / UK 13</option>
-                    <option value="2.5">US 1.5 / 2.5mm / UK 12</option>
-                    <option value="2.75">US 2 / 2.75mm / UK 12</option>
-                    <option value="3">US 2.5 / 3mm / UK 11</option>
-                    <option value="3.25">US 3 / 3.25mm / UK 10</option>
-                    <option value="3.5">US 4 / 3.5mm / UK 9</option>
-                    <option value="3.75">US 5 / 3.75mm / UK 9</option>
-                    <option value="4">US 6 / 4mm / UK 8</option>
-                    <option value="4.5">US 7 / 4.5mm / UK 7</option>
-                    <option value="5">US 8 / 5mm / UK 6</option>
-                    <option value="5.5">US 9 / 5.5mm / UK 5</option>
-                    <option value="6">US 10 / 6mm / UK 4</option>
-                    <option value="6.5">US 10.5 / 6.5mm / UK 3</option>
-                    <option value="7">US 10.75 / 7mm / UK 2</option>
-                    <option value="8">US 11 / 8mm / UK 0</option>
-                    <option value="9">US 13 / 9mm / UK 00</option>
-                    <option value="10">US 15 / 10mm / UK 000</option>
-                  </select>
-                </div>
-              </div>
-              <hr />
-              <p>Rib gauge</p>
-              <div className="gauge-wrapper">
-                <div className="form-row">
-                  <label htmlFor="rib_stitches">Number of Stitches</label>
-                  <input
-                    type="number"
-                    id="rib_stitches"
-                    name="rib_stitches"
-                    defaultValue="18"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="rib_width">Width (cm)</label>
-                  <input
-                    type="number"
-                    id="rib_width"
-                    name="rib_width"
-                    defaultValue="10"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="rib_rows">Number of Rows</label>
-                  <input
-                    type="number"
-                    id="rib_rows"
-                    name="rib_rows"
-                    defaultValue="23"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="rib_length">Length (cm)</label>
-                  <input
-                    type="number"
-                    id="rib_length"
-                    name="rib_length"
-                    defaultValue="10"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="rib_needle_size">Needle Size:</label>
-                  <select
-                    id="rib_needle_size"
-                    name="rib_needle_size"
-                    value={ribNeedleSize}
-                    onChange={handleRibNeedleChange}
-                  >
-                    <option value="2">US 0 / 2mm / UK 14</option>
-                    <option value="2.25">US 1 / 2.25mm / UK 13</option>
-                    <option value="2.5">US 1.5 / 2.5mm / UK 12</option>
-                    <option value="2.75">US 2 / 2.75mm / UK 12</option>
-                    <option value="3">US 2.5 / 3mm / UK 11</option>
-                    <option value="3.25">US 3 / 3.25mm / UK 10</option>
-                    <option value="3.5">US 4 / 3.5mm / UK 9</option>
-                    <option value="3.75">US 5 / 3.75mm / UK 9</option>
-                    <option value="4">US 6 / 4mm / UK 8</option>
-                    <option value="4.5">US 7 / 4.5mm / UK 7</option>
-                    <option value="5">US 8 / 5mm / UK 6</option>
-                    <option value="5.5">US 9 / 5.5mm / UK 5</option>
-                    <option value="6">US 10 / 6mm / UK 4</option>
-                    <option value="6.5">US 10.5 / 6.5mm / UK 3</option>
-                    <option value="7">US 10.75 / 7mm / UK 2</option>
-                    <option value="8">US 11 / 8mm / UK 0</option>
-                    <option value="9">US 13 / 9mm / UK 00</option>
-                    <option value="10">US 15 / 10mm / UK 000</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div id="description" className="tabcontent">
-              <h2>Description</h2>
-              <p>Add a description for your pattern</p>
-              <div className="description-wrapper">
-                <div className="form-row">
-                  <label htmlFor="garment_name">Name of your garment</label>
-                  <input
-                    type="text"
-                    id="garment_name"
-                    name="garment_name"
-                    defaultValue="N/A"
-                  />
-                </div>
-                <div className="form-row">
-                  <label htmlFor="created_for">Created for</label>
-                  <input
-                    type="text"
-                    id="created_for"
-                    name="created_for"
-                    defaultValue="N/A"
-                  />
-                </div>
-                <div className="form-textarea">
-                  <label htmlFor="notes">Notes</label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    rows="10"
-                    cols="65"
-                    placeholder="Type a description for your garment here"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
+            <NewPatternClothingTypeTab
+              activeTabName={activeTabName}
+              activeImageButtons={activeImageButtons}
+              toggleImageButton={toggleImageButton}
+            />
+            <NewPatternNecklineTab
+              activeTabName={activeTabName}
+              activeImageButtons={activeImageButtons}
+              toggleImageButton={toggleImageButton}
+            />
+            <NewPatternSleevesTab
+              activeTabName={activeTabName}
+              activeImageButtons={activeImageButtons}
+              handleChange={handleChange}
+              toggleImageButton={toggleImageButton}
+            />
+            <NewPatternSizeTab
+              activeTabName={activeTabName}
+              handleChange={handleChange}
+            />
+            <NewPatternStitchTab
+              formData={formData}
+              activeTabName={activeTabName}
+              handleChange={handleChange}
+            />
+            <NewPatternDescriptionTab
+              formData={formData}
+              activeTabName={activeTabName}
+              handleChange={handleChange}
+            />
           </div>
           <input
             type="hidden"
             id="clothing-type-input"
             name="clothing-type"
-            value="Sweater"
+            value={activeImageButtons.clothingType}
           />
           <input
             type="hidden"
             id="neckline-type-input"
             name="neckline-type"
-            value="V-neck"
+            value={activeImageButtons.necklineType}
           />
           <input
             type="hidden"
             id="sleeve-type-input"
             name="sleeve-type"
-            value="Drop sleeves"
-          />
-          <input
-            type="hidden"
-            id="stitch-type-input"
-            name="stitch-type"
-            value="Stockinette"
+            value={activeImageButtons.sleeveType}
           />
         </div>
         <section id="divider"></section>

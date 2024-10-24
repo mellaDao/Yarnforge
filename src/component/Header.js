@@ -7,9 +7,8 @@ function Header() {
 
   // Check if user is logged in when component mounts
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-    setIsLoggedIn(!!token);
+    setToken(localStorage.getItem("token")); // Directly set token from localStorage
+    setIsLoggedIn(!!localStorage.getItem("token")); // Directly check if token exists and set isLoggedIn
   }, []);
 
   return (

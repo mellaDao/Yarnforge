@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-const ThreeScene = () => {
+const ThreeScene = ({ formData, activeImageButtons }) => {
   const containerRef = useRef(null);
   const controlsRef = useRef(null);
   const sceneRef = useRef(null);
@@ -12,8 +12,6 @@ const ThreeScene = () => {
   const currentClothingTypeRef = useRef(null);
   const currentNecklineTypeRef = useRef(null);
   const currentSleeveTypeRef = useRef(null);
-  const currentSleeveTypeStringRef = useRef(null);
-  const currentSleeveLengthStringRef = useRef("long");
 
   useEffect(() => {
     const init = () => {
@@ -36,9 +34,10 @@ const ThreeScene = () => {
       scene.add(ambientLight);
 
       //load initial model
-      selectClothingType("Sweater");
-      selectNecklineType("Round-neck");
-      selectSleeveType("Bishop Sleeves");
+      let sleeveLength = formData.sleeveLength;
+      selectClothingType(activeImageButtons.clothingType);
+      selectNecklineType(activeImageButtons.necklineType);
+      selectSleeveType(activeImageButtons.sleeveType, sleeveLength);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -67,102 +66,6 @@ const ThreeScene = () => {
 
       const resetControlsBtn = document.getElementById("reset-controls-btn");
       resetControlsBtn.addEventListener("click", resetControls);
-
-      // Add event listeners for clothing type events
-      document
-        .getElementById("clothing-type-button1")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentClothingTypeRef.current);
-          selectClothingType("Sweater");
-          console.log("Current Clothing Type:", currentClothingTypeRef.current);
-        });
-
-      document
-        .getElementById("clothing-type-button2")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentClothingTypeRef.current);
-          selectClothingType("Dress");
-          console.log("Current Clothing Type:", currentClothingTypeRef.current);
-        });
-
-      // Add event listeners for neckline type events
-      document
-        .getElementById("neckline-type-button1")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("Round-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-      document
-        .getElementById("neckline-type-button2")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("Deep round-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-      document
-        .getElementById("neckline-type-button3")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("V-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-      document
-        .getElementById("neckline-type-button4")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("Deep V-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-      document
-        .getElementById("neckline-type-button5")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("Square-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-      document
-        .getElementById("neckline-type-button6")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentNecklineTypeRef.current);
-          selectNecklineType("Straight-neck");
-          console.log("Current Neckline Type:", currentNecklineTypeRef.current);
-        });
-
-      // Add event listeners for sleeve type events
-      document
-        .getElementById("sleeve-type-button1")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentSleeveTypeRef.current);
-          selectSleeveType("Drop Sleeves");
-        });
-      document
-        .getElementById("sleeve-type-button2")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentSleeveTypeRef.current);
-          selectSleeveType("Puff Sleeves");
-        });
-      document
-        .getElementById("sleeve-type-button3")
-        .addEventListener("click", function () {
-          sceneRef.current.remove(currentSleeveTypeRef.current);
-          selectSleeveType("Bishop Sleeves");
-        });
-
-      // Get all radio buttons for sleeve length
-      const sleeveLengthButtons = document.querySelectorAll(
-        'input[name="sleeve-length"]'
-      );
-      // Add event listener to each radio button
-      sleeveLengthButtons.forEach((button) => {
-        button.addEventListener("change", () => {
-          if (button.checked) {
-            sceneRef.current.remove(currentSleeveTypeRef.current);
-            currentSleeveLengthStringRef.current = button.value;
-            selectSleeveLength(button.value);
-          }
-        });
-      });
     };
 
     const animate = () => {
@@ -257,22 +160,24 @@ const ThreeScene = () => {
     );
   };
 
-  const selectSleeveType = (sleeveType) => {
+  const selectSleeveType = (sleeveType, sleeveLength) => {
     const fbxLoader = new FBXLoader();
     let url;
     switch (sleeveType) {
       case "Drop Sleeves":
-        url = `/models/drop-sleeve-${currentSleeveLengthStringRef.current}.fbx`;
+        url = `/models/drop-sleeve-${sleeveLength}.fbx`;
         break;
       case "Puff Sleeves":
-        url = `/models/puff-sleeve-${currentSleeveLengthStringRef.current}.fbx`;
+        url = `/models/puff-sleeve-${sleeveLength}.fbx`;
         break;
       case "Bishop Sleeves":
-        url = `/models/bishop-sleeve-${currentSleeveLengthStringRef.current}.fbx`;
+        url = `/models/bishop-sleeve-${sleeveLength}.fbx`;
         break;
       default:
         return;
     }
+
+    console.log("Loading sleeve model from:", url);
 
     fbxLoader.load(
       url,
@@ -284,7 +189,6 @@ const ThreeScene = () => {
         object.position.z = 13;
         object.rotation.y -= Math.PI / 2;
         currentSleeveTypeRef.current = object;
-        currentSleeveTypeStringRef.current = sleeveType;
         sceneRef.current.add(object);
       },
       (xhr) => {
@@ -294,10 +198,6 @@ const ThreeScene = () => {
         console.log("An error happened");
       }
     );
-  };
-
-  const selectSleeveLength = (sleeveLength) => {
-    selectSleeveType(currentSleeveTypeStringRef.current);
   };
 
   const resetControls = () => {

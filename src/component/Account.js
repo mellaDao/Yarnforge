@@ -3,12 +3,14 @@ import React from "react";
 function Account() {
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
+
   const handleLogout = () => {
     // Clear the local storage
     localStorage.clear();
     // Redirect to the home page after logout
     window.location.href = "/";
   };
+
   return (
     <section id="body-style1">
       <section className="general-main-content">

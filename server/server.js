@@ -395,7 +395,6 @@ app.post("/fetchPatterns", async (req, res) => {
     if (patterns == 0) {
       res.status(400).json({ errors: ["No patterns found for this account."] });
     }
-    console.log({ patterns });
     return res.status(200).json({ patterns });
   } catch (err) {
     // Handle unexpected errors

@@ -1,7 +1,7 @@
 import React from "react";
 
 function Knitting101() {
-  const openTutorialTab = (event, tabName) => {
+  const openTutorialTab = (tabName) => {
     var i, tabcontent, tablinks;
     // keep track of the current scroll position
     const scrollPosition = window.scrollY;
@@ -88,7 +88,7 @@ function Knitting101() {
               {/* cast on tab */}
               <span
                 className="tutorial-tab-links active"
-                onClick={(event) => openTutorialTab(event, "tutorial-video-co")}
+                onClick={(event) => openTutorialTab("tutorial-video-co")}
               >
                 Cast-on
               </span>
@@ -97,7 +97,7 @@ function Knitting101() {
               {/* knit stitch tab */}
               <span
                 className="tutorial-tab-links"
-                onClick={(event) => openTutorialTab(event, "tutorial-video-k")}
+                onClick={(event) => openTutorialTab("tutorial-video-k")}
               >
                 Knit Stitch
               </span>
@@ -106,7 +106,7 @@ function Knitting101() {
               {/* purl stitch tab */}
               <span
                 className="tutorial-tab-links"
-                onClick={(event) => openTutorialTab(event, "tutorial-video-p")}
+                onClick={(event) => openTutorialTab("tutorial-video-p")}
               >
                 Purl Stitch
               </span>
@@ -115,9 +115,7 @@ function Knitting101() {
               {/* inc stitch tab */}
               <span
                 className="tutorial-tab-links"
-                onClick={(event) =>
-                  openTutorialTab(event, "tutorial-video-inc")
-                }
+                onClick={(event) => openTutorialTab("tutorial-video-inc")}
               >
                 Increases
               </span>
@@ -126,9 +124,7 @@ function Knitting101() {
               {/* dec stitch tab */}
               <span
                 className="tutorial-tab-links"
-                onClick={(event) =>
-                  openTutorialTab(event, "tutorial-video-dec")
-                }
+                onClick={(event) => openTutorialTab("tutorial-video-dec")}
               >
                 Decreases
               </span>
@@ -137,7 +133,7 @@ function Knitting101() {
               {/* bind-off stitch tab */}
               <span
                 className="tutorial-tab-links"
-                onClick={(event) => openTutorialTab(event, "tutorial-video-bo")}
+                onClick={(event) => openTutorialTab("tutorial-video-bo")}
               >
                 Bind-off
               </span>

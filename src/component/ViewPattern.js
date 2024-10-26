@@ -4,13 +4,16 @@ import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ErrorMessages from "./ErrorMessages";
 
 const ViewPattern = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { patternContent, patternParameters } = location.state || {};
+  const { patternParameters, patternContent } = location.state || {};
+  const [activeTabIndex, setActiveTabIndex] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
+
   // sanitize the HTML content
   const sanitizedPatternContentHtml = DOMPurify.sanitize(patternContent);
   const sanitizedPatternParametersHtml = DOMPurify.sanitize(patternParameters);
@@ -19,35 +22,13 @@ const ViewPattern = () => {
   const parsedPatternContent = parse(sanitizedPatternContentHtml);
   const parsedPatternParameters = parse(sanitizedPatternParametersHtml);
 
-  function openGeneratedPatternTab(evt, tabName) {
-    // get all tab contents and hide them
-    var tabContents = document.querySelectorAll(".tabcontent");
-    tabContents.forEach(function (content) {
-      content.classList.remove("active");
-    });
-
-    // get all tab links and remove the 'active' class
-    var tabLinks = document.querySelectorAll(
-      ".generated-pattern-tab-links button"
-    );
-    tabLinks.forEach(function (link) {
-      link.classList.remove("active");
-      link.style.backgroundColor = "#6E48D5";
-    });
-
-    // show the clicked tab content
-    var activeTabContent = document.getElementById(tabName);
-    activeTabContent.classList.add("active");
-
-    // add 'active' class to the clicked tab button
-    evt.currentTarget.classList.add("active");
-    evt.currentTarget.style.backgroundColor = "#009c7a";
+  function openGeneratedPatternTab(tabIndex) {
+    setActiveTabIndex(tabIndex);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     const username = localStorage.getItem("username");
-    console.log({ message: "from viewPatterns.js" }, username);
     if (!username) {
       navigate(`/login`);
     }
@@ -80,9 +61,11 @@ const ViewPattern = () => {
               <h2>
                 {/* pattern parameters tab, on click, open this tab*/}
                 <button
-                  onClick={(event) =>
-                    openGeneratedPatternTab(event, "pattern-parameters")
-                  }
+                  style={{
+                    backgroundColor:
+                      activeTabIndex === 0 ? "#009c7a" : "#6E48D5",
+                  }}
+                  onClick={() => openGeneratedPatternTab(0)}
                 >
                   Pattern Parameters
                 </button>
@@ -94,8 +77,11 @@ const ViewPattern = () => {
             <span className="generated-pattern-tab active">
               <h2>
                 <button
-                  onClick={(event) => openGeneratedPatternTab(event, "pattern")}
-                  style={{ backgroundColor: "var(--link-hover-color)" }}
+                  style={{
+                    backgroundColor:
+                      activeTabIndex === 1 ? "#009c7a" : "#6E48D5",
+                  }}
+                  onClick={() => openGeneratedPatternTab(1)}
                 >
                   Pattern
                 </button>
@@ -131,12 +117,8 @@ const ViewPattern = () => {
         </form>
       </div>
       <section id="divider"></section>
-      {/* error messages */}
-      <div className="error-message">
-        {errors.map((error, index) => (
-          <p key={index}>{error}</p>
-        ))}
-      </div>
+      {/* error messages*/}
+      <ErrorMessages errors={errors} />
     </div>
   );
 };

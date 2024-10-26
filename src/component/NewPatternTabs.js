@@ -1,16 +1,15 @@
 import React from "react";
 
-const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
+const NewPatternTabs = ({ activeTabIndex, openPatternTab }) => {
   return (
     <div className="tabs-wrapper">
       <button
         className="pattern-tab-links default-tab active"
         value="0"
         data-tab="clothing-type"
-        onClick={() => openPatternTab("clothing-type", 0)}
+        onClick={() => openPatternTab(0)}
         style={{
-          backgroundColor:
-            activeTabName === "clothing-type" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 0 ? "#009c7a" : "#6E48D5",
         }}
       >
         Clothing Type
@@ -19,9 +18,9 @@ const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
         className="pattern-tab-links"
         value="1"
         data-tab="neckline"
-        onClick={() => openPatternTab("neckline", 1)}
+        onClick={() => openPatternTab(1)}
         style={{
-          backgroundColor: activeTabName === "neckline" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 1 ? "#009c7a" : "#6E48D5",
         }}
       >
         Neckline
@@ -30,9 +29,9 @@ const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
         className="pattern-tab-links"
         value="2"
         data-tab="sleeves"
-        onClick={() => openPatternTab("sleeves", 2)}
+        onClick={() => openPatternTab(2)}
         style={{
-          backgroundColor: activeTabName === "sleeves" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 2 ? "#009c7a" : "#6E48D5",
         }}
       >
         Sleeves
@@ -41,9 +40,9 @@ const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
         className="pattern-tab-links"
         value="3"
         data-tab="size"
-        onClick={() => openPatternTab("size", 3)}
+        onClick={() => openPatternTab(3)}
         style={{
-          backgroundColor: activeTabName === "size" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 3 ? "#009c7a" : "#6E48D5",
         }}
       >
         Size
@@ -52,9 +51,9 @@ const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
         className="pattern-tab-links"
         value="4"
         data-tab="stitch"
-        onClick={() => openPatternTab("stitch", 4)}
+        onClick={() => openPatternTab(4)}
         style={{
-          backgroundColor: activeTabName === "stitch" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 4 ? "#009c7a" : "#6E48D5",
         }}
       >
         Stitch
@@ -63,10 +62,9 @@ const NewPatternTabs = ({ activeTabName, openPatternTab }) => {
         className="pattern-tab-links"
         value="5"
         data-tab="description"
-        onClick={() => openPatternTab("description", 5)}
+        onClick={() => openPatternTab(5)}
         style={{
-          backgroundColor:
-            activeTabName === "description" ? "#009c7a" : "#6E48D5",
+          backgroundColor: activeTabIndex === 5 ? "#009c7a" : "#6E48D5",
         }}
       >
         Description

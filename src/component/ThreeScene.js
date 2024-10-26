@@ -9,13 +9,18 @@ const ThreeScene = ({ formData, activeImageButtons }) => {
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
-  const currentClothingTypeRef = useRef(null);
+  const currentClothingTypeRef = useRef(null); // Default to null
   const currentNecklineTypeRef = useRef(null);
   const currentSleeveTypeRef = useRef(null);
 
+  // 1. Initialize scene, camera, renderer, and controls on mount
   useEffect(() => {
-    const init = () => {
+    const initScene = () => {
       const container = containerRef.current;
+
+      if (container && container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
 
       const camera = new THREE.PerspectiveCamera(
         70,
@@ -33,60 +38,68 @@ const ThreeScene = ({ formData, activeImageButtons }) => {
       const ambientLight = new THREE.AmbientLight(0xffffff, 1);
       scene.add(ambientLight);
 
-      //load initial model
-      let sleeveLength = formData.sleeveLength;
-      selectClothingType(activeImageButtons.clothingType);
-      selectNecklineType(activeImageButtons.necklineType);
-      selectSleeveType(activeImageButtons.sleeveType, sleeveLength);
-
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setPixelRatio(window.devicePixelRatio);
-      rendererRef.current = renderer;
       renderer.setSize(container.clientWidth, container.clientHeight);
       container.appendChild(renderer.domElement);
+      rendererRef.current = renderer;
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableKeys = true;
       controls.listenToKeyEvents(document.body);
-      controls.keys = {
-        LEFT: "ArrowLeft",
-        UP: "ArrowUp",
-        RIGHT: "ArrowRight",
-        BOTTOM: "ArrowDown",
-      };
-      controls.mouseButtons = {
-        LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.PAN,
-      };
       controlsRef.current = controls;
 
-      // Set the initial size of the renderer
-      onWindowResize();
+      const animate = () => {
+        requestAnimationFrame(animate);
+        controlsRef.current.update();
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+      };
+      animate();
 
-      const resetControlsBtn = document.getElementById("reset-controls-btn");
-      resetControlsBtn.addEventListener("click", resetControls);
+      window.addEventListener("resize", onWindowResize);
     };
 
-    const animate = () => {
-      requestAnimationFrame(animate);
-      controlsRef.current.update();
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    const onWindowResize = () => {
+      const container = containerRef.current;
+      const camera = cameraRef.current;
+      const renderer = rendererRef.current;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
     };
 
-    init(); // Call init inside the useEffect
-    animate(); // Call animate inside the useEffect
+    initScene();
 
-    window.addEventListener("resize", onWindowResize);
     return () => {
       window.removeEventListener("resize", onWindowResize);
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+      }
     };
-  });
+  }, []); // Empty dependency array to ensure initialization only happens once
+
+  // 2. Update the clothing type model when `activeImageButtons.clothingType` changes
+  useEffect(() => {
+    if (!sceneRef.current) return; // Wait until the scene is initialized
+    selectClothingType(activeImageButtons.clothingType);
+  }, [activeImageButtons.clothingType]);
+
+  // 3. Update the neckline model when `activeImageButtons.necklineType` changes
+  useEffect(() => {
+    if (!sceneRef.current) return; // Wait until the scene is initialized
+    selectNecklineType(activeImageButtons.necklineType);
+  }, [activeImageButtons.necklineType]);
+
+  // 4. Update the sleeve type model when `activeImageButtons.sleeveType` or `formData.sleeveLength` changes
+  useEffect(() => {
+    if (!sceneRef.current) return; // Wait until the scene is initialized
+    selectSleeveType(activeImageButtons.sleeveType, formData.sleeveLength);
+  }, [activeImageButtons.sleeveType, formData.sleeveLength]);
 
   const selectClothingType = (clothingType) => {
     const fbxLoader = new FBXLoader();
     let url;
-    if (clothingType === "Sweater") {
+    if (clothingType === "sweater") {
       url = "/models/clothes-sweater.fbx";
     } else {
       url = "/models/clothes-dress.fbx";
@@ -117,22 +130,22 @@ const ThreeScene = ({ formData, activeImageButtons }) => {
     const fbxLoader = new FBXLoader();
     let url;
     switch (necklineType) {
-      case "Round-neck":
+      case "round-neck":
         url = "/models/round-neck.fbx";
         break;
-      case "Deep round-neck":
+      case "deep-round-neck":
         url = "/models/round-neck-deep.fbx";
         break;
-      case "V-neck":
+      case "v-neck":
         url = "/models/v-neck.fbx";
         break;
-      case "Deep V-neck":
+      case "deep-v-neck":
         url = "/models/v-neck-deep.fbx";
         break;
-      case "Square-neck":
+      case "square-neck":
         url = "/models/square-neck.fbx";
         break;
-      case "Straight-neck":
+      case "straight-neck":
         url = "/models/straight-neck.fbx";
         break;
       default:
@@ -161,16 +174,18 @@ const ThreeScene = ({ formData, activeImageButtons }) => {
   };
 
   const selectSleeveType = (sleeveType, sleeveLength) => {
+    console.log("sleevetype:", sleeveType);
+    console.log("sleeveLength:", sleeveLength);
     const fbxLoader = new FBXLoader();
     let url;
     switch (sleeveType) {
-      case "Drop Sleeves":
+      case "drop-sleeves":
         url = `/models/drop-sleeve-${sleeveLength}.fbx`;
         break;
-      case "Puff Sleeves":
+      case "puff-sleeves":
         url = `/models/puff-sleeve-${sleeveLength}.fbx`;
         break;
-      case "Bishop Sleeves":
+      case "bishop-sleeves":
         url = `/models/bishop-sleeve-${sleeveLength}.fbx`;
         break;
       default:
@@ -198,21 +213,6 @@ const ThreeScene = ({ formData, activeImageButtons }) => {
         console.log("An error happened");
       }
     );
-  };
-
-  const resetControls = () => {
-    controlsRef.current.reset();
-  };
-
-  const onWindowResize = () => {
-    const container = containerRef.current;
-    const camera = cameraRef.current;
-    const renderer = rendererRef.current;
-
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(container.clientWidth, container.clientHeight);
   };
 
   return <div className="left-panel" id="left-panel" ref={containerRef}></div>;

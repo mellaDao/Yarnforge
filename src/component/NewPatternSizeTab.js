@@ -1,12 +1,12 @@
 import React from "react";
 
-const NewPatternSizeTab = ({ activeTabName, handleChange }) => {
+const NewPatternSizeTab = ({ activeTabIndex, handleChange }) => {
   return (
     <div
       id="size"
       className="tabcontent"
       style={{
-        display: activeTabName === "size" ? "block" : "none",
+        display: activeTabIndex === 3 ? "block" : "none",
       }}
     >
       <h2>Size</h2>
@@ -38,17 +38,17 @@ const NewPatternSizeTab = ({ activeTabName, handleChange }) => {
         <hr />
 
         <p>Select a fitting</p>
-        <input type="radio" name="fit" value="Petite" onChange={handleChange} />
+        <input type="radio" name="fit" value="petite" onChange={handleChange} />
         <label>Petite</label>
         <input
           type="radio"
           name="fit"
-          value="Regular"
+          value="regular"
           defaultChecked
           onChange={handleChange}
         />
         <label>Regular</label>
-        <input type="radio" name="fit" value="Tall" onChange={handleChange} />
+        <input type="radio" name="fit" value="tall" onChange={handleChange} />
         <label>Tall</label>
       </div>
     </div>

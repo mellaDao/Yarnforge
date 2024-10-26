@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ErrorMessages from "./ErrorMessages";
 
 function Register() {
   const navigate = useNavigate();
@@ -187,14 +188,8 @@ function Register() {
             </p>
           </form>
 
-          {/* display all errors, if any*/}
-          {errors.length > 0 && (
-            <div className="error-message">
-              {errors.map((error, index) => (
-                <p key={index}>{error}</p>
-              ))}
-            </div>
-          )}
+          {/* error messages*/}
+          <ErrorMessages errors={errors} />
         </div>
       </div>
     </section>

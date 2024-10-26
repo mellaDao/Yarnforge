@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ErrorMessages from "./ErrorMessages";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -75,12 +76,8 @@ function ForgotPassword() {
             </div>
           </form>
 
-          {/* display all errors that occurred during form submission*/}
-          <div className="error-message">
-            {errors.map((error, index) => (
-              <p key={index}>{error}</p>
-            ))}
-          </div>
+          {/* error messages*/}
+          <ErrorMessages errors={errors} />
         </div>
       </div>
     </section>

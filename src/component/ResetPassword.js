@@ -2,19 +2,24 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import ErrorMessages from "./ErrorMessages";
 import axios from "axios";
 
 function ResetPassword() {
   const navigate = useNavigate();
-
-  // get email from url
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const email = queryParams.get("email");
+
+  // get email from local storage or url
+  let email = localStorage.getItem("email");
+  if (!email) {
+    email = queryParams.get("email");
+  }
 
   const [errors, setErrors] = useState([]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // after form submission, wait for a response for POST request
   async function handleSubmit(e) {
@@ -27,11 +32,9 @@ function ResetPassword() {
       });
       if (response.status === 200) {
         // if successful response, redirect user to login page
-
         navigate(`/login`);
       } else {
         // if there is a match with database
-
         setErrors([response.data.error || "Invalid token."]);
       }
     } catch (error) {
@@ -55,6 +58,11 @@ function ResetPassword() {
     setConfirmPassword(event.target.value);
   };
 
+  /* on click, toggle password text visibility*/
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <section id="body-style-light">
       {/* click brand heading to redirec to home page*/}
@@ -74,36 +82,51 @@ function ResetPassword() {
 
           <form className="reset-password-form" onSubmit={handleSubmit}>
             <div className="input-box">
+              {/* password input box*/}
               <input
-                type="text"
                 name="password"
+                id="password-field"
+                type={showPassword ? "text" : "password"}
+                className="form-control"
                 placeholder="Password"
                 value={password}
-                onChange={handlePasswordChange}
                 required
+                onChange={handlePasswordChange}
               />
+              <span
+                className={`field-icon bx ${
+                  showPassword ? "bx-show" : "bx-hide"
+                }`}
+                onClick={togglePasswordVisibility}
+              ></span>
             </div>
             <div className="input-box">
               <input
-                type="text"
-                name="confirm-password"
+                name="confirmPassword"
+                id="confirm-password-field"
+                type={showPassword ? "text" : "password"}
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
                 required
               />
             </div>
+            {/* toggle icon for password visibility*/}
+            <span
+              className={`field-icon bx ${
+                showPassword ? "bx-show" : "bx-hide"
+              }`}
+              onClick={togglePasswordVisibility}
+            ></span>
+
             <div>
               <button type="submit" name="reset-password-submit">
                 Reset Password
               </button>
             </div>
           </form>
-          <div className="error-message">
-            {errors.map((error, index) => (
-              <p key={index}>{error}</p>
-            ))}
-          </div>
+          {/* error messages*/}
+          <ErrorMessages errors={errors} />
         </div>
       </div>
     </section>

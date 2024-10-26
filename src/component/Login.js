@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ErrorMessages from "./ErrorMessages";
 import axios from "axios";
 
 function Login() {
@@ -159,11 +160,7 @@ function Login() {
           </form>
 
           {/* error message container*/}
-          <div className="error-message">
-            {errors.map((error, index) => (
-              <p key={index}>{error}</p>
-            ))}
-          </div>
+          <ErrorMessages errors={errors} />
         </div>
       </div>
     </section>

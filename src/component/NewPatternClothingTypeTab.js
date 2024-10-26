@@ -1,7 +1,7 @@
 import React from "react";
 
 const NewPatternClothingTypeTab = ({
-  activeTabName,
+  activeTabIndex,
   activeImageButtons,
   toggleImageButton,
 }) => {
@@ -10,7 +10,7 @@ const NewPatternClothingTypeTab = ({
       id="clothing-type"
       className="tabcontent"
       style={{
-        display: activeTabName === "clothing-type" ? "block" : "none",
+        display: activeTabIndex === 0 ? "block" : "none",
       }}
     >
       <h2>Clothing Type</h2>
@@ -19,10 +19,10 @@ const NewPatternClothingTypeTab = ({
           type="button"
           data-type="clothingType"
           className="image-button"
-          value="Sweater"
+          value="sweater"
           style={{
             color:
-              activeImageButtons.clothingType === "Sweater" ? "#009c7a" : "",
+              activeImageButtons.clothingType === "sweater" ? "#009c7a" : "",
           }}
           onClick={toggleImageButton}
         >
@@ -33,9 +33,9 @@ const NewPatternClothingTypeTab = ({
           type="button"
           data-type="clothingType"
           className="image-button"
-          value="Dress"
+          value="dress"
           style={{
-            color: activeImageButtons.clothingType === "Dress" ? "#009c7a" : "",
+            color: activeImageButtons.clothingType === "dress" ? "#009c7a" : "",
           }}
           onClick={toggleImageButton}
         >

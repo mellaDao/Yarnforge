@@ -1,7 +1,7 @@
 import React from "react";
 
 const NewPatternSleevesTab = ({
-  activeTabName,
+  activeTabIndex,
   activeImageButtons,
   handleChange,
   toggleImageButton,
@@ -11,7 +11,7 @@ const NewPatternSleevesTab = ({
       id="sleeves"
       className="tabcontent"
       style={{
-        display: activeTabName === "sleeves" ? "block" : "none",
+        display: activeTabIndex === 2 ? "block" : "none",
       }}
     >
       <h2>Sleeves</h2>
@@ -22,10 +22,10 @@ const NewPatternSleevesTab = ({
             type="button"
             data-type="sleeveType"
             className="image-button"
-            value="Drop Sleeves"
+            value="drop-sleeves"
             style={{
               color:
-                activeImageButtons.sleeveType === "Drop Sleeves"
+                activeImageButtons.sleeveType === "drop-sleeves"
                   ? "#009c7a"
                   : "",
             }}
@@ -39,10 +39,10 @@ const NewPatternSleevesTab = ({
             type="button"
             data-type="sleeveType"
             className="image-button"
-            value="Puff Sleeves"
+            value="puff-sleeves"
             style={{
               color:
-                activeImageButtons.sleeveType === "Puff Sleeves"
+                activeImageButtons.sleeveType === "puff-sleeves"
                   ? "#009c7a"
                   : "",
             }}
@@ -56,10 +56,10 @@ const NewPatternSleevesTab = ({
             type="button"
             data-type="sleeveType"
             className="image-button"
-            value="Bishop Sleeves"
+            value="bishop-sleeves"
             style={{
               color:
-                activeImageButtons.sleeveType === "Bishop Sleeves"
+                activeImageButtons.sleeveType === "bishop-sleeves"
                   ? "#009c7a"
                   : "",
             }}

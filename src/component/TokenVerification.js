@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ErrorMessages from "./ErrorMessages";
 
 function TokenVerification() {
   const navigate = useNavigate();
@@ -88,12 +89,8 @@ function TokenVerification() {
               </button>
             </div>
           </form>
-          {/* display all errors here from form submission */}
-          <div className="error-message">
-            {errors.map((error, index) => (
-              <p key={index}>{error}</p>
-            ))}
-          </div>
+          {/* error messages*/}
+          <ErrorMessages errors={errors} />
         </div>
       </div>
     </section>

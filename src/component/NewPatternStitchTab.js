@@ -1,12 +1,12 @@
 import React from "react";
 
-const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
+const NewPatternStitchTab = ({ formData, activeTabIndex, handleChange }) => {
   return (
     <div
       id="stitch"
       className="tabcontent"
       style={{
-        display: activeTabName === "stitch" ? "block" : "none",
+        display: activeTabIndex === 4 ? "block" : "none",
       }}
     >
       <h2>Stitch</h2>
@@ -17,17 +17,17 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <label>Yarn Weight:</label>
           <select
             name="yarnWeight"
-            value={formData.ribNeedleSize}
+            value={formData.yarnWeight}
             onChange={handleChange}
           >
-            <option value="Lace">Lace</option>
-            <option value="Light Fingering">Light Fingering</option>
-            <option value="Sport">Sport</option>
-            <option value="DK">DK</option>
-            <option value="Worsted">Worsted</option>
-            <option value="Aran">Aran</option>
-            <option value="Bulky">Bulky</option>
-            <option value="Super Bulky">Super Bulky</option>
+            <option value="lace">Lace</option>
+            <option value="fingering">Light Fingering</option>
+            <option value="sport">Sport</option>
+            <option value="dk">DK</option>
+            <option value="worsted">Worsted</option>
+            <option value="aran">Aran</option>
+            <option value="bulky">Bulky</option>
+            <option value="super Bulky">Super Bulky</option>
           </select>
         </div>
         <div className="form-row">
@@ -36,7 +36,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
             type="number"
             name="ststStitches"
             onChange={handleChange}
-            defaultValue="18"
+            defaultValue={formData.ststStitches}
           />
         </div>
         <div className="form-row">
@@ -44,7 +44,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ststWidth"
-            defaultValue="10"
+            defaultValue={formData.ststWidth}
             onChange={handleChange}
           />
         </div>
@@ -53,7 +53,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ststRows"
-            defaultValue="23"
+            defaultValue={formData.ststRows}
             onChange={handleChange}
           />
         </div>
@@ -62,7 +62,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ststLength"
-            defaultValue="10"
+            defaultValue={formData.ststLength}
             onChange={handleChange}
           />
         </div>
@@ -102,7 +102,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ribStitches"
-            defaultValue="18"
+            defaultValue={formData.ribStitches}
             onChange={handleChange}
           />
         </div>
@@ -111,7 +111,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ribWidth"
-            defaultValue="10"
+            defaultValue={formData.ribWidth}
             onChange={handleChange}
           />
         </div>
@@ -120,7 +120,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ribRows"
-            defaultValue="23"
+            defaultValue={formData.ribRows}
             onChange={handleChange}
           />
         </div>
@@ -129,7 +129,7 @@ const NewPatternStitchTab = ({ formData, activeTabName, handleChange }) => {
           <input
             type="number"
             name="ribLength"
-            defaultValue="10"
+            defaultValue={formData.ribLength}
             onChange={handleChange}
           />
         </div>

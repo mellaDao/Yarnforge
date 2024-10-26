@@ -6,6 +6,7 @@ import NewPatternSleevesTab from "./NewPatternSleevesTab";
 import NewPatternStitchTab from "./NewPatternStitchTab";
 import NewPatternDescriptionTab from "./NewPatternDescriptionTab";
 import NewPatternNecklineTab from "./NewPatternNecklineTab";
+import NewPatternNavButtons from "./NewPatternNavButtons";
 import NewPatternTabs from "./NewPatternTabs";
 import { useNavigate } from "react-router-dom";
 
@@ -14,38 +15,33 @@ function NewPattern() {
 
   // define state variables for each form option
   const [formData, setFormData] = useState({
-    clothingType: "Sweater",
-    necklineType: "",
-    sleeveType: "",
     sleeveLength: "long",
     size: "xs",
-    fitting: "",
-    yarnWeight: "",
-    ribStitches: "",
-    ribWidth: "",
-    ribRows: "",
-    ribLength: "",
+    fitting: "regular",
+    yarnWeight: "dk",
+    ribStitches: "18",
+    ribWidth: "10",
+    ribRows: "23",
+    ribLength: "10",
     ribNeedleSize: "4",
-    ststStitches: "",
-    ststWidth: "",
-    ststRows: "",
-    ststLength: "",
-    ststNeedleSize: "4.5",
-    garmentName: "",
-    createdFor: "",
-    notes: "",
+    ststStitches: "18",
+    ststWidth: "10",
+    ststRows: "23",
+    ststLength: "10",
+    ststNeedleSize: "7",
+    garmentName: "N/A",
+    createdFor: "N/A",
+    notes: "N/A",
   });
 
-  const [activeTabName, setActiveTabName] = useState("clothing-type");
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [activeImageButtons, setActiveImageButtons] = useState({
-    clothingType: "Sweater",
-    necklineType: "V-neck",
-    sleeveType: "Bishop Sleeves",
+    clothingType: "sweater",
+    necklineType: "v-neck",
+    sleeveType: "bishop-sleeves",
   });
 
-  const openPatternTab = (tabName, tabIndex) => {
-    setActiveTabName(tabName);
+  const openPatternTab = (tabIndex) => {
     setActiveTabIndex(tabIndex);
   };
 
@@ -69,22 +65,19 @@ function NewPattern() {
     });
   };
 
-  function prevTab() {
+  const prevTab = () => {
     setActiveTabIndex(activeTabIndex - 1);
-  }
+  };
 
-  function nextTab() {
+  const nextTab = () => {
     setActiveTabIndex(activeTabIndex + 1);
-  }
+  };
 
   // on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const {
-      clothingType,
-      necklineType,
-      sleeveType,
       sleeveLength,
       size,
       fitting,
@@ -104,67 +97,44 @@ function NewPattern() {
       notes,
     } = formData;
 
-    // get bust circumference based on size input
-    function getBustsize(size) {
-      let num = 0;
-      switch (size) {
-        case "xs":
-          num = 32;
-          break;
-        case "s":
-          num = 34;
-          break;
-        case "m":
-          num = 38;
-          break;
-        case "l":
-          num = 40;
-          break;
-        case "xl":
-          num = 42;
-          break;
-        case "2xl":
-          num = 46;
-          break;
-        case "3xl":
-          num = 50;
-          break;
-        default:
-          break;
-      }
-      return num;
-    }
+    const { clothingType, necklineType, sleeveType } = activeImageButtons;
 
-    // determine length multiplier based on size input (add to total sweater length for increasing sizes)
-    function getLengthMultipler(size) {
-      let num;
-      switch (size) {
-        case "xs":
-          num = 1;
-          break;
-        case "s":
-          num = 2;
-          break;
-        case "m":
-          num = 3;
-          break;
-        case "l":
-          num = 4;
-          break;
-        case "xl":
-          num = 5;
-          break;
-        case "2xl":
-          num = 6;
-          break;
-        case "3xl":
-          num = 7;
-          break;
-        default:
-          break;
+    // size chart
+    const sizeChart = {
+      xs: { bust: 32, wrist: 13.5, lengthMultiplier: 1 },
+      s: { bust: 34, wrist: 14, lengthMultiplier: 2 },
+      m: { bust: 38, wrist: 14.5, lengthMultiplier: 3 },
+      l: { bust: 40, wrist: 15, lengthMultiplier: 4 },
+      xl: { bust: 42, wrist: 15.5, lengthMultiplier: 5 },
+      "2xl": { bust: 46, wrist: 16, lengthMultiplier: 6 },
+      "3xl": { bust: 50, wrist: 16.5, lengthMultiplier: 7 },
+    };
+
+    // capitalization exceptions
+    const capitalizationMap = {
+      dk: "DK",
+      "v-neck": "V-neck",
+      "deep-v-neck": "Deep V-neck",
+    };
+
+    // capitalization rules
+    const capitalizeBasedOnRules = (string) => {
+      // if it is part of capitalization exceptions
+      if (capitalizationMap[string]) {
+        return capitalizationMap[string];
       }
-      return num;
-    }
+
+      // if not, replace hyphens with spaces and split into words
+      const words = string.replace(/-/g, " ").split(" ");
+
+      // capitalize the first letter of first word
+      if (words.length > 0) {
+        words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+      }
+
+      // join the words back into a single string
+      return words.join(" ");
+    };
 
     // get numerical length of sleeves
     function getSleeveLength(sleeveLength) {
@@ -188,17 +158,17 @@ function NewPattern() {
       return num;
     }
 
-    // get numerical length of sweater
+    // get sweater length
     function getSweaterLength(sizeLengthMultiplier, fitting) {
       let num = 0;
       switch (fitting) {
-        case "Petite":
+        case "petite":
           num = 56 + sizeLengthMultiplier * 2;
           break;
-        case "Regular":
+        case "regular":
           num = 60 + sizeLengthMultiplier * 2;
           break;
-        case "Long":
+        case "long":
           num = 64 + sizeLengthMultiplier * 2;
           break;
         default:
@@ -207,38 +177,23 @@ function NewPattern() {
       return num;
     }
 
-    // calculate number of stitches to cast on for body
-    function calculateCastOn(bustSizeNum, ribStitches, ribWidth) {
-      let num = 0;
-      const stitchLength = ribStitches / ribWidth;
-      num = Math.ceil(stitchLength * bustSizeNum);
-      return num;
-    }
-
-    // calculate number of stitches for stst
-    function calculateStst(bustSizeNum, ststStitches, ststWidth) {
-      let num = 0;
-      const stitchLength = ststStitches / ststWidth;
-      num = Math.ceil(stitchLength * bustSizeNum);
-      return num;
-    }
-
-    function calculateDecFromRib(numStitches, castOn) {
-      let decs = 0;
-      decs = Math.abs(numStitches - castOn);
-      decs = Math.round(decs);
-      return decs;
-    }
-
+    // calculate string for front instructions
     function calculateFrontInstructions(
+      numStitches,
       necklineType,
-      necklineStart,
-      necklineBO,
-      necklineEnd,
       sweaterLengthNum
     ) {
       let instructions = "";
       let roundDecreases, roundDecreasesSlow, roundDecreasesRowsSlow;
+
+      // calculate when to begin working on neckline
+      let necklineStart = Math.round(numStitches / 3);
+
+      // calculate number of total rows for neckline before binding off
+      let necklineEnd = necklineStart - 6;
+
+      // calculate number of stitches to bind off
+      let necklineBO = numStitches - necklineStart * 2;
 
       if (necklineBO % 2 === 1) {
         roundDecreases = Math.round(necklineBO / 4);
@@ -255,7 +210,7 @@ function NewPattern() {
       let fullLength = sweaterLengthNum;
       let vneckDecreases = Math.round(necklineBO / 2);
 
-      // Switch case based on the neckline type
+      // switch case based on the neckline type
       switch (necklineType) {
         case "Round-neck":
           instructions = `
@@ -336,60 +291,10 @@ function NewPattern() {
                 `;
           break;
         default:
-          instructions =
-            "No instructions available for the selected neckline type.";
           break;
       }
 
       return instructions;
-    }
-
-    /*
-        Sizes: XS, S, M, L, XL, 2XL, 3XL
-        Finished Chest Measurement: 32,  34,  38,  40,  42,  46,  50
-        Wrist measurements:        13.5, 14, 14.5, 15, 15.5, 16, 16.5
-        */
-    // Determine size based on finished chest measurement
-    function getWristCircumference(bustSizeNum) {
-      let num = 0;
-      switch (bustSizeNum) {
-        case "xs":
-          num = 13.5;
-          break;
-        case "s":
-          num = 14;
-          break;
-        case "m":
-          num = 14.5;
-          break;
-        case "l":
-          num = 15;
-          break;
-        case "xl":
-          num = 15.5;
-          break;
-        case "2xl":
-          num = 16;
-          break;
-        case "3xl":
-          num = 16.5;
-          break;
-        default:
-          break;
-      }
-      return num;
-    }
-
-    // calculate number of stitches to cast on for sleeves
-    function calculateCastOnSleeves(
-      wristCircumferenceNum,
-      ribStitches,
-      ribWidth
-    ) {
-      let num = 0;
-      let stitchLength = ribStitches / ribWidth;
-      num = Math.ceil(wristCircumferenceNum / stitchLength);
-      return num;
     }
 
     // calculate armhole circumference: (cm) = BUST/6 + 3.5 to 6 cm.
@@ -416,19 +321,21 @@ function NewPattern() {
       sleeveType,
       sleeveLengthNum,
       castOnSleeves,
-      ststStitches,
-      ststWidth,
-      armholeCircumferenceNum
+      ststStitchLength,
+      bustSizeNum
     ) {
       let numStitchesArmhole = 0;
       let numIncreases = 0;
       let instructions = "";
-
-      // calculate stitch length
-      const stitchLength = ststStitches / ststWidth;
+      let armholeCircumferenceNum = getArmholeCircumference(
+        bustSizeNum,
+        sleeveType
+      );
 
       // calculate number of stitches for armhole
-      numStitchesArmhole = Math.ceil(armholeCircumferenceNum / stitchLength);
+      numStitchesArmhole = Math.ceil(
+        armholeCircumferenceNum / ststStitchLength
+      );
 
       // calculate number of increases
       numIncreases = Math.round(Math.abs(numStitchesArmhole - castOnSleeves));
@@ -460,8 +367,6 @@ function NewPattern() {
                 `;
           break;
         default:
-          instructions =
-            "No instructions available for the selected sleeve type.";
           break;
       }
       return instructions;
@@ -502,8 +407,6 @@ function NewPattern() {
           instructions = "";
           break;
         default:
-          instructions =
-            "No instructions available for the selected neckline type.";
           break;
       }
       return instructions;
@@ -512,13 +415,23 @@ function NewPattern() {
     let patternParameters = "";
 
     // Concatenate parameter values into the patternParameters string
-    patternParameters += "Clothing Type: " + clothingType + "<br>";
-    patternParameters += "Neckline Type: " + necklineType + "<br>";
-    patternParameters += "Sleeve Type: " + sleeveType + "<br>";
-    patternParameters += "Sleeve Length: " + sleeveLength + "<br>";
-    patternParameters += "Fitting: " + fitting + "<br>";
-    patternParameters += "Size: " + size + "<br>";
-    patternParameters += "Yarn Weight: " + yarnWeight + "<br>";
+    patternParameters += `Clothing Type: ${capitalizeBasedOnRules(
+      clothingType
+    )} <br>`;
+    patternParameters += `Neckline Type: ${capitalizeBasedOnRules(
+      necklineType
+    )}<br>`;
+    patternParameters += `Sleeve Type: : ${capitalizeBasedOnRules(
+      sleeveType
+    )}<br>`;
+    patternParameters += `Sleeve Length: : ${capitalizeBasedOnRules(
+      sleeveLength
+    )}<br>`;
+    patternParameters += `Size: : ${size.toUpperCase()}<br>`;
+    patternParameters += `Fitting: : ${capitalizeBasedOnRules(fitting)}<br>`;
+    patternParameters += `Yarn Weight: : ${capitalizeBasedOnRules(
+      yarnWeight
+    )}<br>`;
     patternParameters += "Rib Stitches: " + ribStitches + "<br>";
     patternParameters += "Rib Width: " + ribWidth + "<br>";
     patternParameters += "Rib Rows: " + ribRows + "<br>";
@@ -536,66 +449,45 @@ function NewPattern() {
     patternParameters += "Notes: " + notes;
 
     // calculate bust circumference and set text
-    let bustSizeNum = getBustsize(size);
-    let bustSizeText = `
-    <span class='pattern-label'>Size:</span> ${size}<br>
-    <span class='pattern-label'>Finished bust:</span> ${bustSizeNum} cm<br>
-    `;
-
-    // calculate sleeve length and set text
-    let sleeveLengthNum = getSleeveLength(sleeveLength);
-    let sleeveLengthText = `<span class='pattern-label'>Sleeve Length:</span> ${sleeveLength} (${sleeveLengthNum} cm)<br>`;
+    let bustSizeNum = sizeChart[size]?.bust || 0;
 
     // calculate sweater length set text
-    let lengthMultiplier = getLengthMultipler(size);
+    let lengthMultiplier = sizeChart[size]?.lengthMultiplier || 0;
     let sweaterLengthNum = getSweaterLength(lengthMultiplier, fitting);
-    let sweaterLengthText = `<span class='pattern-label'>Total length:</span> ${fitting.toLowerCase()} (${sweaterLengthNum} cm)<br>`;
 
     // calculate the number of stitches to cast on using ribbing gauge
-    let castOn = calculateCastOn(bustSizeNum, ribStitches, ribWidth);
+    let ribStitchLength = ribStitches / ribWidth;
+    let castOn = Math.ceil(ribStitchLength * bustSizeNum);
 
     // calculate the number of stitches for stockinette
-    let numStitches = Math.round(
-      calculateStst(bustSizeNum, ststStitches, ststWidth)
-    );
+    let ststStitchLength = ststStitches / ststWidth;
+    let numStitches = Math.ceil(ststStitchLength * bustSizeNum);
+
+    // calculate number of stitches to decrease to match stst and ribbing gauge
+    let decsFromRib = Math.round(Math.abs(numStitches - castOn));
 
     // calculate when to begin working on neckline
     let necklineStart = Math.round(numStitches / 3);
-
     // calculate number of stitches to bind off
     let necklineBO = numStitches - necklineStart * 2;
-
     // calculate number of total rows for neckline before binding off
     let necklineEnd = necklineStart - 6;
 
-    // calculate number of stitches to decrease to match stst and ribbing gauge
-    let decsFromRib = calculateDecFromRib(numStitches, castOn);
-
     // calculate front instructions
     let frontInstructions = calculateFrontInstructions(
+      numStitches,
       necklineType,
-      necklineStart,
-      necklineBO,
-      necklineEnd,
       sweaterLengthNum
     );
 
+    // calculate sleeve length and set text
+    let sleeveLengthNum = getSleeveLength(sleeveLength);
+
     // calculate circumference of sleeve
-    let wristCircumferenceNum = getWristCircumference(bustSizeNum);
+    let wristCircumferenceNum = sizeChart[size]?.wrist || 0;
 
     // calculate number of stitches to cast on for sleeves
-    let castOnSleeves = calculateCastOnSleeves(
-      wristCircumferenceNum,
-      ribStitches,
-      ribWidth,
-      ribRows
-    );
-
-    // calculate armhole circumference in cm
-    let armholeCircumferenceNum = getArmholeCircumference(
-      bustSizeNum,
-      sleeveType
-    );
+    let castOnSleeves = Math.ceil(wristCircumferenceNum / ribStitchLength);
 
     // calculate sleeve instructions
     let sleeveInstructions = calculateSleeveInstructions(
@@ -603,9 +495,8 @@ function NewPattern() {
       sleeveLengthNum,
       castOnSleeves,
       ststStitches,
-      ststWidth,
-      ststRows,
-      armholeCircumferenceNum
+      ststStitchLength,
+      bustSizeNum
     );
 
     // calculate neckband instrctions
@@ -614,9 +505,12 @@ function NewPattern() {
 
     let measurements =
       "<h2>Measurements</h2><br>" +
-      bustSizeText +
-      sleeveLengthText +
-      sweaterLengthText +
+      `
+    <span class='pattern-label'>Size:</span> ${size}<br>
+    <span class='pattern-label'>Finished bust:</span> ${bustSizeNum} cm<br>
+    ` +
+      `<span class='pattern-label'>Sleeve Length:</span> ${sleeveLength} (${sleeveLengthNum} cm)<br>` +
+      `<span class='pattern-label'>Total length:</span> ${fitting.toLowerCase()} (${sweaterLengthNum} cm)<br>` +
       "<hr>";
 
     // Materials
@@ -700,39 +594,22 @@ function NewPattern() {
       measurements + materials + gauge + stitchGlossary + knittingInstructions;
 
     navigate("/viewPattern", {
-      state: { patternContent, patternParameters },
+      state: { patternParameters, patternContent },
     });
   };
 
   return (
     <section>
       <NewPatternTabs
-        activeTabName={activeTabName}
+        activeTabIndex={activeTabIndex}
         openPatternTab={openPatternTab}
       />
 
-      <div className="navigation-buttons">
-        <button id="reset-controls-btn">Reset Controls</button>
-
-        <button
-          id="backButton"
-          style={{
-            display: activeTabIndex === 0 ? "none" : "block",
-          }}
-          onClick={prevTab}
-        >
-          Back
-        </button>
-        <button
-          id="nextButton"
-          style={{
-            display: activeTabIndex === 5 ? "none" : "block",
-          }}
-          onClick={nextTab}
-        >
-          Next
-        </button>
-      </div>
+      <NewPatternNavButtons
+        activeTabIndex={activeTabIndex}
+        prevTab={prevTab}
+        nextTab={nextTab}
+      />
 
       <form id="pattern-form" onSubmit={handleSubmit}>
         <div className="pattern-container">
@@ -742,33 +619,33 @@ function NewPattern() {
           />
           <div className="right-panel">
             <NewPatternClothingTypeTab
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               activeImageButtons={activeImageButtons}
               toggleImageButton={toggleImageButton}
             />
             <NewPatternNecklineTab
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               activeImageButtons={activeImageButtons}
               toggleImageButton={toggleImageButton}
             />
             <NewPatternSleevesTab
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               activeImageButtons={activeImageButtons}
               handleChange={handleChange}
               toggleImageButton={toggleImageButton}
             />
             <NewPatternSizeTab
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               handleChange={handleChange}
             />
             <NewPatternStitchTab
               formData={formData}
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               handleChange={handleChange}
             />
             <NewPatternDescriptionTab
               formData={formData}
-              activeTabName={activeTabName}
+              activeTabIndex={activeTabIndex}
               handleChange={handleChange}
             />
           </div>

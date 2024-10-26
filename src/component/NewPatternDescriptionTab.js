@@ -1,12 +1,16 @@
 import React from "react";
 
-const NewPatternDescriptionTab = ({ activeTabName, handleChange }) => {
+const NewPatternDescriptionTab = ({
+  formData,
+  activeTabIndex,
+  handleChange,
+}) => {
   return (
     <div
       id="description"
       className="tabcontent"
       style={{
-        display: activeTabName === "description" ? "block" : "none",
+        display: activeTabIndex === 5 ? "block" : "none",
       }}
     >
       <h2>Description</h2>
@@ -17,7 +21,7 @@ const NewPatternDescriptionTab = ({ activeTabName, handleChange }) => {
           <input
             type="text"
             name="garmentName"
-            defaultValue="N/A"
+            defaultValue={formData.garmentName}
             onChange={handleChange}
           />
         </div>
@@ -26,7 +30,7 @@ const NewPatternDescriptionTab = ({ activeTabName, handleChange }) => {
           <input
             type="text"
             name="createdFor"
-            defaultValue="N/A"
+            defaultValue={formData.createdFor}
             onChange={handleChange}
           />
         </div>

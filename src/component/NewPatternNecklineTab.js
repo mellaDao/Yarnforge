@@ -1,7 +1,7 @@
 import React from "react";
 
 const NewPatternNecklineTab = ({
-  activeTabName,
+  activeTabIndex,
   activeImageButtons,
   toggleImageButton,
 }) => {
@@ -10,7 +10,7 @@ const NewPatternNecklineTab = ({
       id="neckline"
       className="tabcontent"
       style={{
-        display: activeTabName === "neckline" ? "block" : "none",
+        display: activeTabIndex === 1 ? "block" : "none",
       }}
     >
       <h2>Neckline</h2>
@@ -20,10 +20,10 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="Round-neck"
+          value="round-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "Round-neck" ? "#009c7a" : "",
+              activeImageButtons.necklineType === "round-neck" ? "#009c7a" : "",
           }}
           onClick={toggleImageButton}
         >
@@ -35,10 +35,10 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="Deep round-neck"
+          value="deep-round-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "Deep round-neck"
+              activeImageButtons.necklineType === "deep-round-neck"
                 ? "#009c7a"
                 : "",
           }}
@@ -52,10 +52,10 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="V-neck"
+          value="v-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "V-neck" ? "#009c7a" : "",
+              activeImageButtons.necklineType === "v-neck" ? "#009c7a" : "",
           }}
           onClick={toggleImageButton}
         >
@@ -67,10 +67,10 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="Deep V-neck"
+          value="deep-v-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "Deep V-neck"
+              activeImageButtons.necklineType === "deep-v-neck"
                 ? "#009c7a"
                 : "",
           }}
@@ -84,16 +84,16 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="Square-neck"
+          value="square-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "Square-neck"
+              activeImageButtons.necklineType === "square-neck"
                 ? "#009c7a"
                 : "",
           }}
           onClick={toggleImageButton}
         >
-          <img src="/icons/square-neck.png" alt="Square-Neck" />
+          <img src="/icons/square-neck.png" alt="square-Neck" />
           <br></br>
           Square-neck
         </button>
@@ -101,10 +101,10 @@ const NewPatternNecklineTab = ({
           type="button"
           data-type="necklineType"
           className="image-button"
-          value="Straight-neck"
+          value="straight-neck"
           style={{
             color:
-              activeImageButtons.necklineType === "Straight-neck"
+              activeImageButtons.necklineType === "straight-neck"
                 ? "#009c7a"
                 : "",
           }}

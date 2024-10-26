@@ -5,6 +5,9 @@ const sqlite3 = require("sqlite3").verbose();
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const apiKey = process.env.API_KEY;
 
 app.use(cors());
 app.use((req, res, next) => {
@@ -20,9 +23,9 @@ let db = new sqlite3.Database("yarnforge.db", (err) => {
   console.log("Connected to the access database.");
 });
 
-// Middleware to verify JWT token
+// middleware to verify JWT token
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization; // Assuming token is sent in the Authorization header
+  const token = req.headers.authorization; // get token from authorization header
   if (!token) {
     return res.status(403).json({ message: "Token is missing" });
   }
@@ -30,30 +33,30 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.status(401).json({ message: "Token is invalid" });
     }
-    req.user = decoded; // Store decoded user information in request object
-    next(); // Call next middleware
+    req.user = decoded; // store decoded user information in request object
+    next(); // call next middleware
   });
 };
 
 app.post("/validateLogin", (req, res) => {
   const { username, password } = req.body;
   const errors = [];
-  // Prepare a SELECT statement to retrieve user data based on the provided username
+  // prepare a SELECT statement to retrieve user data based on username
   const query = "SELECT * FROM users WHERE username = ?";
 
-  // Execute query
+  // execute query
   db.all(query, [username], (err, rows) => {
-    // Handle any potential database errors
+    // handle any potential database errors
     if (err) {
-      // Handle any potential database errors
+      // handle any potential database errors
       return res.status(500).json({ errors: ["Database error occurred."] });
     }
-    // No user found with the provided username, return an error message
+    // no user found with the provided username, return an error message
     if (rows.length === 0) {
       errors.push("Login credentials do not match");
       return res.status(400).json({ errors });
     }
-    // Check if a row is returned and verify the password
+    // check if a row is returned and verify the password
     const user = rows[0];
     if (user.password != password) {
       errors.push("Login credentials do not match");
@@ -67,16 +70,16 @@ app.post("/validateLogin", (req, res) => {
 
 const { promisify } = require("util");
 
-// Convert db.get and db.run to promises
+// convert db.get and db.run to promises
 const dbGetAsync = promisify(db.get.bind(db));
 const dbRunAsync = promisify(db.run.bind(db));
 
-// Register endpoint
+// register endpoint
 app.post("/validateRegistration", async (req, res) => {
   const { username, email, password, confirm_password } = req.body;
   const errors = [];
 
-  // Validate username
+  // validate username
   const forbiddenCharacters = ["&", "=", "'", "+", ",", "<", ">"];
   if (
     !username ||
@@ -102,7 +105,7 @@ app.post("/validateRegistration", async (req, res) => {
     );
   }
 
-  // Validate password
+  // validate password
   if (
     !password ||
     password.length < 8 ||
@@ -114,18 +117,18 @@ app.post("/validateRegistration", async (req, res) => {
     );
   }
 
-  // Validate confirm password
+  // validate confirm password
   if (password !== confirm_password) {
     errors.push("Passwords do not match.");
   }
 
-  // Validate email
+  // validate email
   if (!validator.isEmail(email)) {
     errors.push("Invalid email format.");
   }
 
   try {
-    // Check if username already exists
+    // check if username already exists
     const usernameExists = await dbGetAsync(
       "SELECT * FROM users WHERE username = ?",
       [username]
@@ -134,7 +137,7 @@ app.post("/validateRegistration", async (req, res) => {
       errors.push("Username already exists");
     }
 
-    // Check if email already exists
+    // check if email already exists
     const emailExists = await dbGetAsync(
       "SELECT * FROM users WHERE email = ?",
       [email]
@@ -143,19 +146,19 @@ app.post("/validateRegistration", async (req, res) => {
       errors.push("An account already exists for this email");
     }
 
-    // If there are validation errors, return them
+    // if there are validation errors, return them
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
 
-    // If no errors, insert new user into the database
+    // if no errors, insert new user into the database
     await dbRunAsync(
       "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
       [username, email, password]
     );
     res.status(200).json({ message: "Success." });
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     res
       .status(500)
@@ -163,10 +166,10 @@ app.post("/validateRegistration", async (req, res) => {
   }
 });
 
-// Protected route example
+// account endpoint
 app.get("/account", verifyToken, (req, res) => {
-  const username = req.user.username; // Assuming you have stored the username in the JWT payload
-  // Query the database to retrieve the user's information based on the username
+  const username = req.user.username;
+  // retrieve user's information based on username
   db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
     if (err) {
       return res.status(500).json({ error: "Internal Server Error" });
@@ -174,16 +177,17 @@ app.get("/account", verifyToken, (req, res) => {
     if (!row) {
       return res.status(404).json({ error: "User not found" });
     }
-    // If the user is found, send the username and email back to the client
+    // send the username and email back to the client
     res.json({ username: row.username, email: row.email });
   });
 });
 
+// forgot password endpoint
 app.post("/forgotPassword", async (req, res) => {
   const { email } = req.body;
   const errors = [];
   try {
-    // Check if account exists for entered email
+    // check if account exists for entered email
     const emailExists = await dbGetAsync(
       "SELECT * FROM users WHERE email = ?",
       [email]
@@ -193,11 +197,11 @@ app.post("/forgotPassword", async (req, res) => {
       return res.status(400).json({ errors });
     } else {
       try {
-        // Generate a token and set expiry time
+        // generate a token and set expiry time
         const token = generateToken();
         const expiryTime = new Date(Date.now() + 3600000); // 1 hour from now
 
-        // Insert the token into the password_resets table
+        // insert the token into the password_resets table
         db.run(
           "INSERT INTO password_resets (email, token, expiry_time) VALUES (?, ?, ?)",
           [email, token, expiryTime.toISOString()],
@@ -207,7 +211,7 @@ app.post("/forgotPassword", async (req, res) => {
               return res.status(500).json({ message: "Database error." });
             }
 
-            // Send recovery email
+            // send recovery email
             await sendRecoveryEmail(email, token);
 
             res
@@ -223,7 +227,7 @@ app.post("/forgotPassword", async (req, res) => {
       }
     }
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     res
       .status(500)
@@ -232,22 +236,22 @@ app.post("/forgotPassword", async (req, res) => {
 });
 
 async function sendRecoveryEmail(to, token) {
-  // Create a Nodemailer transporter
+  // create a Nodemailer transporter
   let transporter = nodemailer.createTransport({
     host: "smtp.sendgrid.net",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
       user: "apikey", // SMTP username
-      pass: "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", // SMTP password
+      pass: apiKey, // SMTP password
     },
   });
 
-  // Send mail with defined transport object
+  // send mail with defined transport object
   let info = await transporter.sendMail({
     from: "yarnforgeofficial@gmail.com", // sender address
     to: to, // list of receivers
-    subject: "Password Recovery", // Subject line
+    subject: "Password Recovery", // subject line
     html: `<p>Your password recovery token is: ${token}</p>`, // HTML body
   });
 
@@ -255,7 +259,7 @@ async function sendRecoveryEmail(to, token) {
 }
 
 function generateToken() {
-  // Generate a random 6-digit number
+  // generate a random 6-digit number
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
@@ -264,7 +268,7 @@ app.post("/verifyToken", async (req, res) => {
   const errors = [];
 
   try {
-    // Check if account exists for entered email
+    // check if account exists for entered email
     const row = await dbGetAsync(
       "SELECT * FROM password_resets WHERE email=? AND token=?",
       [email, token]
@@ -281,7 +285,7 @@ app.post("/verifyToken", async (req, res) => {
         return res.status(400).json({ errors });
       }
 
-      // If no errors, delete tokens from db
+      // if no errors, delete all tokens with associated email from db
       await dbRunAsync("DELETE FROM password_resets WHERE email = ?", [email]);
       return res.status(200).json({ message: "Success." });
     }
@@ -291,11 +295,12 @@ app.post("/verifyToken", async (req, res) => {
   }
 });
 
+// reset password endpoint
 app.post("/resetPassword", async (req, res) => {
   const { email, password, confirmPassword } = req.body;
   const errors = [];
 
-  // Validate password
+  // validate password
   if (
     !password ||
     password.length < 8 ||
@@ -307,57 +312,54 @@ app.post("/resetPassword", async (req, res) => {
     );
   }
 
-  // Validate confirm password
+  // validate confirm password
   if (password !== confirmPassword) {
     errors.push("Passwords do not match.");
   }
-
-  // Check if token matches and is not expired
+  // if no errors, then proceed to update password in db
   if (errors.length === 0) {
-    db.get(
-      "UPDATE users SET password = ? WHERE email = ?",
-      [email, password],
-      async (err) => {
-        if (err) {
-          errors.push("Oops! Something went wrong. Please try again later.");
-          return res.status(500).json({ errors });
-        }
-
-        return res
-          .status(200)
-          .json({ message: "Password reset successfully." });
-      }
-    );
+    try {
+      // insert pattern info into patterns table for specified user_id
+      await dbRunAsync("UPDATE users SET password = ? WHERE email = ?", [
+        password,
+        email,
+      ]);
+      // return successful response
+      return res.status(200).json({ message: "Success." });
+    } catch (err) {
+      // handle unexpected errors
+      console.error(err);
+      errors.push("Internal server error. Please try again later.");
+      return res.status(500).json({ errors });
+    }
   } else {
     return res.status(500).json({ errors });
   }
 });
 
-// Save pattern endpoint
+// save pattern endpoint
 app.post("/savePattern", async (req, res) => {
   let { patternContent, patternParameters, username } = req.body;
-  const errors = [];
-  // Extract garment name and created for from patternParameters
+  // extract garment name and created for from patternParameters
   const garmentNameMatch = patternParameters.match(/Garment Name: (.*?)<br>/);
   const createdForMatch = patternParameters.match(/Created For: (.*?)<br>/);
   const garmentName = garmentNameMatch ? garmentNameMatch[1] : null;
   const createdFor = createdForMatch ? createdForMatch[1] : null;
   username = username.replace(/^"|"$/g, "");
-  const user_id = [];
 
   try {
     const user = await retrieveUser(username);
     const user_id = user.user_id;
 
-    // Insert pattern info into patterns table for specified user_id
+    // insert pattern info into patterns table for specified user_id
     await dbRunAsync(
       "INSERT INTO patterns (user_id, pattern_name, created_for, pattern_instructions, pattern_parameters) VALUES (?, ?, ?, ?, ?)",
       [user_id, garmentName, createdFor, patternContent, patternParameters]
     );
-    // Return successful response
+    // return successful response
     return res.status(200).json({ message: "Success." });
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     return res
       .status(500)
@@ -365,6 +367,7 @@ app.post("/savePattern", async (req, res) => {
   }
 });
 
+// retrieve user info with username
 function retrieveUser(username) {
   const sql = "SELECT * FROM users WHERE username=?";
   return new Promise((resolve, reject) => {
@@ -378,7 +381,7 @@ function retrieveUser(username) {
   });
 }
 
-// Save pattern endpoint
+// save pattern endpoint
 app.post("/fetchPatterns", async (req, res) => {
   let { username } = req.body;
   if (!username) {
@@ -391,13 +394,13 @@ app.post("/fetchPatterns", async (req, res) => {
     const user_id = user.user_id;
 
     const patterns = await retrievePatterns(user_id);
-    // Return successful response
+    // return successful response
     if (patterns == 0) {
       res.status(400).json({ errors: ["No patterns found for this account."] });
     }
     return res.status(200).json({ patterns });
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     return res
       .status(500)
@@ -431,21 +434,21 @@ function retrievePattern(patternID) {
   });
 }
 
-// Save pattern endpoint
+// save pattern endpoint
 app.post("/deletePattern", async (req, res) => {
   const { patternID } = req.body;
   const errors = [];
 
   try {
-    // Insert pattern info into patterns table for specified user_id
+    // insert pattern info into patterns table for specified user_id
     const patterns = await dbRunAsync(
       "DELETE FROM patterns WHERE pattern_id = ?",
       [patternID]
     );
-    // Return successful response
+    // return successful response
     return res.status(200).json({ message: "Success" });
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     return res
       .status(500)
@@ -453,22 +456,22 @@ app.post("/deletePattern", async (req, res) => {
   }
 });
 
-// View pattern endpoint
+// view pattern endpoint
 app.post("/viewPattern", async (req, res) => {
   const { patternID } = req.body;
   console.log(patternID);
   const errors = [];
 
   try {
-    // Insert pattern info into patterns table for specified user_id
+    // insert pattern info into patterns table for specified user_id
     const result = await retrievePattern(patternID);
     console.log(result);
     const patternParameters = result.pattern_parameters;
     const patternContent = result.pattern_instructions;
-    // Return successful response
+    // return successful response
     return res.status(200).json({ patternParameters, patternContent });
   } catch (err) {
-    // Handle unexpected errors
+    // handle unexpected errors
     console.error(err);
     return res
       .status(500)

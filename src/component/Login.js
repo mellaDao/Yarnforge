@@ -159,7 +159,7 @@ function Login() {
             </p>
           </form>
 
-          {/* error message container*/}
+          {/* error messages*/}
           <ErrorMessages errors={errors} />
         </div>
       </div>

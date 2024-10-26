@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, HashRouter } from "react-router-dom";
 import Header from "./Header";
 import Home from "./Home";
 import MyPatterns from "./MyPatterns";
@@ -27,7 +27,7 @@ function App() {
   ].includes(location.pathname);
 
   return (
-    <div>
+    <HashRouter>
       {/* Routes*/}
       {showHeader && <Header />}
       <Routes>
@@ -45,7 +45,7 @@ function App() {
         <Route path="/viewPattern" element={<ViewPattern />} />
         <Route path="/" element={<Home />} />
       </Routes>
-    </div>
+    </HashRouter>
   );
 }
 

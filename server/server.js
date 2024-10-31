@@ -384,15 +384,23 @@ function retrieveUser(username) {
 // save pattern endpoint
 app.post("/fetchPatterns", async (req, res) => {
   let { username } = req.body;
+  // require username
   if (!username) {
     return res.status(400).json({ errors: ["Username is required."] });
   }
+
   username = username.replace(/^"|"$/g, "");
   const errors = [];
-  try {
-    const user = await retrieveUser(username);
-    const user_id = user.user_id;
 
+  try {
+    // get username
+    const user = await retrieveUser(username);
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ errors: ["User not found."] });
+    }
+    const user_id = user.user_id;
+    console.log(user_id);
     const patterns = await retrievePatterns(user_id);
     // return successful response
     if (patterns == 0) {
@@ -401,18 +409,67 @@ app.post("/fetchPatterns", async (req, res) => {
     return res.status(200).json({ patterns });
   } catch (err) {
     // handle unexpected errors
-    console.error(err);
-    return res
-      .status(500)
-      .json({ errors: ["Internal server error. Please try again later."] });
+    console.error("Error in fetchPatterns:", err);
+    return res.status(500).json({ errors: [err] });
+  }
+});
+
+// save pattern endpoint
+app.post("/sortPatterns", async (req, res) => {
+  console.log("Received request body:", req.body);
+  let { username, type, direction } = req.body;
+  // require username
+  if (!username) {
+    return res.status(400).json({ errors: ["Username is required."] });
+  }
+
+  username = username.replace(/^"|"$/g, "");
+  const errors = [];
+
+  try {
+    // get username
+    const user = await retrieveUser(username);
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({ errors: ["User not found."] });
+    }
+    const user_id = user.user_id;
+    console.log(user_id);
+    const patterns = await sortPatterns(user_id, type, direction);
+    // return successful response
+    if (patterns == 0) {
+      res.status(400).json({ errors: ["No patterns found for this account."] });
+    }
+    return res.status(200).json({ patterns });
+  } catch (err) {
+    // handle unexpected errors
+    console.error("Error in fetchPatterns:", err);
+    return res.status(500).json({ errors: [err] });
   }
 });
 
 function retrievePatterns(user_id) {
-  const sql = "SELECT * FROM patterns WHERE user_id=?";
+  // build the SQL query with the validated sort type and direction
+  const sql = `SELECT * FROM patterns WHERE user_id=?`;
   return new Promise((resolve, reject) => {
     db.all(sql, [user_id], (err, result) => {
       if (err) {
+        console.error("Error executing SQL:", err);
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
+
+function sortPatterns(user_id, type, direction) {
+  // build the SQL query with the validated sort type and direction
+  const sql = `SELECT * FROM patterns WHERE user_id=? ORDER BY ${type} ${direction}`;
+  return new Promise((resolve, reject) => {
+    db.all(sql, [user_id], (err, result) => {
+      if (err) {
+        console.error("Error executing SQL:", err);
         reject(err);
       } else {
         resolve(result);

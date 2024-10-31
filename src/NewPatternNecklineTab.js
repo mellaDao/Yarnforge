@@ -14,7 +14,7 @@ const NewPatternNecklineTab = ({
       }}
     >
       <h2>Neckline</h2>
-
+      <p>Choose your neckline style</p>
       <div className="image-button-wrapper-2x3">
         <button
           type="button"

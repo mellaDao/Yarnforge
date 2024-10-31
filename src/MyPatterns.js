@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PatternsTable from "./PatternsTable";
+import ErrorMessages from "./ErrorMessages";
 import { useNavigate } from "react-router-dom";
+import MyPatternsDropdown from "./MyPatternsDropdown";
 
 function MyPatterns() {
   const [patterns, setPatterns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
+  const [sortedBy, setSortedBy] = useState({
+    type: "Date Created",
+    direction: "north",
+  });
+  const [isVisible, setVisible] = useState(false);
   const navigate = useNavigate();
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
-    // when component mounts, get username from local storage
-    const username = localStorage.getItem("username");
-
     // if there is no username, redirect to login page
     if (!username) {
       navigate(`/login`);
@@ -22,30 +28,27 @@ function MyPatterns() {
       try {
         const response = await axios.post(
           "http://localhost:3001/fetchPatterns",
-          { username }
+          {
+            username,
+          }
         ); // endpoint to get user patterns
         if (response.status === 200) {
           setPatterns(response.data.patterns);
         }
       } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.errors
-        ) {
-          // set errors
-          setErrors(error.response.data.errors);
-        } else {
-          console.error("An error occurred:", error.message);
-          setErrors(["An unexpected error occurred. Please try again."]);
-        }
+        const errorMessages = error.response?.data?.errors || [error.message];
+        setErrors(
+          errorMessages.map((err) =>
+            typeof err === "string" ? err : JSON.stringify(err)
+          )
+        );
       } finally {
         setLoading(false); // set loading to false regardless of success or failure
       }
     }
 
     fetchPatterns();
-  }, [navigate]);
+  }, [navigate, username]);
 
   // function to confirm deletion of a pattern
   const confirmDelete = async (patternID, event) => {
@@ -124,70 +127,47 @@ function MyPatterns() {
     }
   };
 
+  const toggleDropdown = () => {
+    setVisible(!isVisible);
+  };
+
+  const handleSort = async (type, direction, typeSQL, directionSQL) => {
+    setSortedBy({ type, direction });
+    setVisible(!isVisible);
+
+    try {
+      const response = await axios.post("http://localhost:3001/sortPatterns", {
+        username,
+        type: typeSQL,
+        direction: directionSQL,
+      }); // endpoint to view a pattern
+      if (response.status === 200) {
+        setPatterns(response.data.patterns);
+      }
+    } catch (err) {
+      console.error(err);
+      setErrors(["Failed to sort patterns"]);
+    }
+  };
+
   return (
     <section className="general-main-content">
       {/* my patterns title*/}
       <h2>Saved Patterns</h2>
       {/* display loading status*/}
       {loading && <p>Loading...</p>}
-
-      {/* display all errors that occurred*/}
-      <div className="error-message">
-        {errors.map((error, index) => (
-          <p key={index}>{error}</p>
-        ))}
-      </div>
-
-      {/* display user's saved patterns in a table*/}
-      <div className="patterns-table">
-        <table>
-          <thead>
-            <tr>
-              {/* table columns*/}
-              <th>Date Created</th>
-              <th>Pattern Name</th>
-              <th>Created For</th>
-              <th>View</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* loop through and display patterns if there are patterns*/}
-            {patterns && patterns.length > 0 ? (
-              patterns.map((pattern) => (
-                <tr key={pattern.pattern_id}>
-                  <td>{pattern.created_at}</td>
-                  <td>{pattern.pattern_name || "N/A"}</td>
-                  <td>{pattern.created_for || "N/A"}</td>
-                  <td>
-                    {/* on view pattern button click, pass pattern id to handleViewPattern function*/}
-                    <button
-                      onClick={() => handleViewPattern(pattern.pattern_id)}
-                    >
-                      View Pattern
-                    </button>
-                  </td>
-                  <td>
-                    {/* on delete pattern button click, pass pattern id and event to confirmDelete function*/}
-                    <button
-                      onClick={(event) =>
-                        confirmDelete(pattern.pattern_id, event)
-                      }
-                    >
-                      Delete Pattern
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                {/* display a simple message if no patterns are found*/}
-                <td colSpan="5">No patterns found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <MyPatternsDropdown
+        toggleDropdown={toggleDropdown}
+        sortedBy={sortedBy}
+        handleSort={handleSort}
+        isVisible={isVisible}
+      />
+      <ErrorMessages errors={errors} />
+      <PatternsTable
+        patterns={patterns}
+        handleViewPattern={handleViewPattern}
+        confirmDelete={confirmDelete}
+      />
     </section>
   );
 }

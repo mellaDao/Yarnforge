@@ -487,6 +487,7 @@ footer {
     align-items: center;
     padding: 20px;
     padding-left: 50px;
+    border-bottom: 1px solid var(--divider-color);
 }
 
 .glossary-term h3 {
@@ -497,10 +498,6 @@ footer {
 .glossary-term p {
     width: 500px;
     min-height: 50px;
-}
-
-.glossary-term {
-    border-bottom: 1px solid var(--divider-color);
 }
 
 .glossary-term:nth-child(2n+1):nth-last-child(-n+2),

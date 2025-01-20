@@ -402,7 +402,7 @@ footer {
 }
 
 .generated-pattern-container button{
-    padding: 10px 20px; /* Add padding for better spacing */
+    padding: 10px 20px;
     background-color:var(--secondary-button-color);
     color: var(--secondary-button-text-color);
     width: 220px;
@@ -445,8 +445,8 @@ footer {
 
 .save-pattern-btn-wrapper{
     display: flex;
-    justify-content: center; /* Horizontally center */
-    align-items: center; /* Vertically center */
+    justify-content: center; 
+    align-items: center; 
 }
 
 #save-pattern-btn {
@@ -460,20 +460,21 @@ footer {
 }
 
 .save-pattern-container {
-    text-align: center; /* Aligns content to the center */
+    text-align: center; 
 }
 
 .save-pattern-container p {
     padding-left: 5px;
-    margin-top: 15px; /* Adjust margin as needed */
+    margin-top: 15px;
 }
 
 .tabcontent {
     display: none;
 }
 
+/* when active, change to block to make the container visible */
 .tabcontent.active {
-    display: block; /* Change to block to make the container visible */
+    display: block;
 }
 
 #glossary {
@@ -594,14 +595,14 @@ footer {
 }
 
 .tabs-wrapper {
-    display: flex; /* Use flexbox to align items */
+    display: flex;
     justify-content: center;
     padding: 50px;
 }
 
 .pattern-tab-links {
     text-transform: uppercase;
-    padding: 10px 20px; /* Add padding for better spacing */
+    padding: 10px 20px; 
     background-color:var(--secondary-button-color);
     color: var(--secondary-button-text-color);
     cursor: pointer;
@@ -666,9 +667,9 @@ footer {
 }
 
 .right-panel, .left-panel {
-    box-sizing: border-box; /* Includes padding and border in the width calculation */
+    box-sizing: border-box; /* includes padding and border in the width calculation */
     width: 50%;
-    height: 540px; /* Adjust height as necessary */
+    height: 540px;
     border: 1px solid rgb(255, 255, 255);
 }
 
@@ -680,22 +681,22 @@ footer {
 }
 
 .left-panel {
-    position: relative; /* Ensure proper positioning of Three.js canvas */
+    position: relative;
   }
   
   .left-panel canvas {
     width: 100%;
     height: 100%;
-    position: absolute; /* Position canvas within its container */
+    position: absolute;
     top: 0;
     left: 0;
   }
 
-/* Define a class for the image buttons */
+/* image buttons */
 .image-button {
-    border: transparent; /* Remove border */
-    background: none; /* Remove background */
-    cursor: pointer; /* Set cursor to pointer */
+    border: transparent;
+    background: none;
+    cursor: pointer;
     color: white;
     font-size: 20px;
 }
@@ -704,16 +705,16 @@ footer {
     color: #009c7a; 
 }
 
-/* Optional: Add hover effect */
+/* add hover effect */
 .image-button:hover {
-    opacity: 0.8; /* Reduce opacity on hover */
+    opacity: 0.8; /* reduce opacity on hover */
 }
 
 .image-button-wrapper-2x1{
-    display: flex; /* Use Flexbox */
+    display: flex; 
     flex-direction: row;
-    justify-content: center; /* Align items horizontally at the center */
-    align-items: center; /* Align items vertically at the center */
+    justify-content: center; 
+    align-items: center; 
     padding-top:70px;
 }
 
@@ -722,23 +723,23 @@ footer {
 }
 
 .image-button-wrapper-2x3{
-    display: grid; /* Use Grid layout */
-    grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
-    justify-content: center; /* Align items horizontally at the center */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* create 3 equal columns */
+    justify-content: center;
     padding-top: 15px;
 }
 
 .image-button-wrapper-2x3 .image-button{
     margin: 10px;
-    max-width: calc((100% - 40px)); /* Calculate the maximum width of each button considering the margin */
-    max-height: 170px; /* Calculate the maximum height of each button considering the margin */
+    max-width: calc((100% - 40px)); /* calculate the maximum width of each button considering the margin */
+    max-height: 170px; /* calculate the maximum height of each button considering the margin */
     padding-bottom: 50px;
 }
 
 .image-button-wrapper-4x1{
-    display: grid; /* Use Grid layout */
-    grid-template-columns: repeat(4, 1fr); /* Create 3 equal columns */
-    justify-content: center; /* Align items horizontally at the center */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-content: center;
     padding-top: 15px;
 }
 
@@ -747,9 +748,9 @@ footer {
 }
 
 .image-button-wrapper-3x1{
-    display: grid; /* Use Grid layout */
-    grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
-    justify-content: center; /* Align items horizontally at the center */
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    justify-content: center;
     padding-top: 15px;
 }
 
@@ -758,8 +759,8 @@ footer {
 }
 
 .image-button img {
-    max-width: 100%; /* Set maximum width to 100% of the button width */
-    max-height: 100%; /* Set maximum height to 100% of the button height */
+    max-width: 100%; 
+    max-height: 100%;
 }
 
 .options-wrapper{
@@ -795,7 +796,7 @@ footer {
 
 .gauge-wrapper .form-row label {
     display: inline-block;
-    width: 170px; /* Adjust the width as needed */
+    width: 170px;
     font-size: 0.9em;
 }
 
@@ -867,19 +868,19 @@ footer {
 
 table {
     border-collapse: collapse;
-    margin-top: 20px; /* Add some margin for spacing */
+    margin-top: 20px;
     color: white;
     z-index: 1;
 }
 
 th, td {
-    border: 1px solid #ddd; /* Add borders to table cells */
-    padding: 8px; /* Add padding for better spacing */
-    text-align: left; /* Align text to the left */
+    border: 1px solid #ddd; 
+    padding: 8px; 
+    text-align: left; 
 }
 
 th {
-    background-color: #f2f2f200; /* Background color for table header */    
+    background-color: #f2f2f200; 
 }
 
 tr:nth-child(even) {
@@ -887,7 +888,7 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(odd) {
-    background-color: var(--header-bg-color); /* Alternate row background color */
+    background-color: var(--header-bg-color); 
 }
 
 table tr td:nth-child(1) {
@@ -910,31 +911,31 @@ table tr td:nth-child(5) {
     width: 250px;
 }
 
-/* Styles for links within table cells */
+/* styles for links within table cells */
 table tr td:nth-child(4) button {
     background: none;
     border: none;
-    color: #2effd2; /* Green color */
+    color: #2effd2; 
     text-decoration: none;
     cursor: pointer;
     padding: 0;
 }
 
 table tr td:nth-child(4) button:hover {
-    text-decoration: underline; /* Underline on hover */
+    text-decoration: underline; 
 }
 
 table tr td:nth-child(5) button {
     background: none;
     border: none;
-    color: rgb(255, 0, 0); /* Red color */
+    color: rgb(255, 0, 0); 
     text-decoration: none;
     cursor: pointer;
     padding: 0;
 }
 
 table tr td:nth-child(5) button:hover {
-    text-decoration: underline; /* Underline on hover */
+    text-decoration: underline;
 }
 
 .myPatterns-button {

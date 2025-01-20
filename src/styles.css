@@ -994,7 +994,7 @@ table tr td:nth-child(5) button:hover {
     transform: translateY(-3px);
 }
 
-/*font size reduction for mobile and tablet widths */
+/* font size reduction for mobile and tablet widths */
 @media (max-width: 850px) {
     body {
         font-size: 0.85em;
@@ -1007,7 +1007,7 @@ table tr td:nth-child(5) button:hover {
     }
 }
 
-/*layout changes for mobile widths (850px) */
+/* layout changes for mobile widths (850px) */
 @media (max-width: 850px) {
     #slider-image {max-width: 100%;}
     #flash-ad {display: none;}
